@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, Loader2 } from "lucide-react";
-import AuthLayout from "../components/AuthLayout";
-import InputField from "../components/InputField";
+import AuthLayout from "../../components/AuthLayout";
+import InputField from "../../components/InputField";
+import { api } from "../../services/api";
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [remember, setRemember] = useState(true);
@@ -34,16 +35,17 @@ export default function Login() {
     setServerError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, remember }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Invalid email or password");
+      const data = await api.login(form.email, form.password);
+      if (!data.success) throw new Error(data.message || "Invalid email or password");
 
-      // e.g. store token / redirect based on role returned by the API
-      navigate("/dashboard");
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user, data.token);
+      }
+
+      // Redirect according to user role
+      if (data.user.role === "student") navigate("/student/dashboard");
+      else if (data.user.role === "faculty") navigate("/faculty/dashboard");
+      else if (data.user.role === "admin") navigate("/admin/dashboard");
     } catch (err) {
       setServerError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -88,9 +90,6 @@ export default function Login() {
             />
             Remember me
           </label>
-          <Link to="/forgot-password" className="text-slate-400 hover:text-slate-200">
-            Forgot password?
-          </Link>
         </div>
 
         {serverError && (
@@ -102,7 +101,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="shadow-neu-raised-sm mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-role-student/90 to-role-faculty/90 py-3 text-sm font-semibold text-base-900 transition-transform active:scale-[0.98] disabled:opacity-60"
+          className="shadow-neu-raised-sm mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-role-student/90 to-role-faculty/90 py-3 text-sm font-semibold text-base-900 transition-transform active:scale-[0.98] disabled:opacity-60 cursor-pointer"
         >
           {loading && <Loader2 size={16} className="animate-spin" />}
           {loading ? "Signing in…" : "Sign in"}

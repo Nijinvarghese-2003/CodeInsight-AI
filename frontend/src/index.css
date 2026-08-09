@@ -27,28 +27,35 @@
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px) rotate(var(--tilt, 0deg));
   }
+
   50% {
     transform: translateY(-14px) rotate(var(--tilt, 0deg));
   }
 }
+
 @keyframes glow {
+
   0%,
   100% {
     opacity: 0.45;
   }
+
   50% {
     opacity: 0.85;
   }
 }
+
 @keyframes fade-up {
   0% {
     opacity: 0;
     transform: translateY(10px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -94,6 +101,7 @@ body {
   box-shadow: inset 4px 4px 9px #05060d, inset -4px -4px 9px #1a2038;
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
+
 .neu-input:focus-within {
   border-color: rgba(255, 255, 255, 0.12);
 }
@@ -109,6 +117,7 @@ input:-webkit-autofill {
 .scroll-thin::-webkit-scrollbar {
   width: 6px;
 }
+
 .scroll-thin::-webkit-scrollbar-thumb {
   background: #232a4a;
   border-radius: 999px;

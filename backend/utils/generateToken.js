@@ -6,7 +6,7 @@ const generateToken = (id, role) => {
       id,
       role,
     },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || "fallback_secret",
     {
       expiresIn: process.env.JWT_EXPIRES_IN || "7d",
     },
