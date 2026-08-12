@@ -6,7 +6,7 @@ import Submission from "../models/Submission.js";
  */
 function tokenizeCode(code) {
   if (!code) return [];
-  
+
   // Strip comments
   let clean = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "");
   // Strip strings and numbers
@@ -15,7 +15,7 @@ function tokenizeCode(code) {
   const tokens = clean
     .split(/[\s,;(){}\[\]+\-*\/%!=&|<>.]+/)
     .filter((t) => t.length > 0);
-  
+
   return tokens;
 }
 
