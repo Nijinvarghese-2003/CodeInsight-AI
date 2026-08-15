@@ -17,6 +17,7 @@ import authRoutes from "./routes/authRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
 import submissionRoutes from "./routes/submissionRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import academicRoutes from "./routes/academicRoutes.js";
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/academic", academicRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

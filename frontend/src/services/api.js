@@ -132,4 +132,152 @@ export const api = {
     });
     return res.json();
   },
+
+  // Academic Management
+  getDepartments: async () => {
+    const res = await fetch(`${API_BASE_URL}/academic/departments`, {
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  createDepartment: async (deptData) => {
+    const res = await fetch(`${API_BASE_URL}/academic/departments`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(deptData),
+    });
+    return res.json();
+  },
+
+  deleteDepartment: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/academic/departments/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  getCourses: async (departmentId = "") => {
+    const query = departmentId ? `?departmentId=${departmentId}` : "";
+    const res = await fetch(`${API_BASE_URL}/academic/courses${query}`, {
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  createCourse: async (courseData) => {
+    const res = await fetch(`${API_BASE_URL}/academic/courses`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(courseData),
+    });
+    return res.json();
+  },
+
+  deleteCourse: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/academic/courses/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  getLabSubjects: async (courseId = "") => {
+    const query = courseId ? `?courseId=${courseId}` : "";
+    const res = await fetch(`${API_BASE_URL}/academic/labs${query}`, {
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  createLabSubject: async (labData) => {
+    const res = await fetch(`${API_BASE_URL}/academic/labs`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(labData),
+    });
+    return res.json();
+  },
+
+  deleteLabSubject: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/academic/labs/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  getAcademicHierarchy: async () => {
+    const res = await fetch(`${API_BASE_URL}/academic/hierarchy`, {
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  // Pre-Approved Directory
+  getPreApprovedList: async () => {
+    const res = await fetch(`${API_BASE_URL}/admin/preapproved`, {
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  getPreApprovedUsers: async () => {
+    const res = await fetch(`${API_BASE_URL}/admin/preapproved`, {
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  addPreApprovedUser: async (data) => {
+    const res = await fetch(`${API_BASE_URL}/admin/preapproved`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
+
+  deletePreApprovedUser: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/admin/preapproved/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  // Faculty Approvals & Labs
+  getPendingFaculties: async () => {
+    const res = await fetch(`${API_BASE_URL}/admin/pending-faculties`, {
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  approveFacultyWithLabs: async (userId, teachingLabs) => {
+    const res = await fetch(`${API_BASE_URL}/admin/approve-faculty/${userId}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ teachingLabs }),
+    });
+    return res.json();
+  },
+
+  rejectFaculty: async (userId) => {
+    const res = await fetch(`${API_BASE_URL}/admin/reject-faculty/${userId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  updateFacultyLabs: async (userId, teachingLabs) => {
+    const res = await fetch(`${API_BASE_URL}/admin/faculty/${userId}/labs`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ teachingLabs }),
+    });
+    return res.json();
+  },
 };

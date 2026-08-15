@@ -310,10 +310,22 @@ export default function PreApprovedManager() {
                       </span>
                     </td>
                     <td className="p-4 text-slate-300">
-                      <div>{item.name || "N/A"}</div>
+                      <div className="font-semibold text-white">{item.name || "N/A"}</div>
                       {item.department && (
-                        <div className="text-[10px] text-slate-400">
-                          {item.department.name || item.department}
+                        <div className="text-[10px] text-amber-300 flex items-center gap-1 mt-0.5">
+                          <Building2 className="w-3 h-3 text-amber-400" />
+                          <span>{typeof item.department === "object" ? item.department.name : item.department}</span>
+                          {item.department.code && (
+                            <span className="font-mono text-[9px] px-1 rounded bg-slate-800 text-amber-300">
+                              {item.department.code}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {item.course && (
+                        <div className="text-[10px] text-teal-300 flex items-center gap-1 mt-0.5">
+                          <BookOpen className="w-3 h-3 text-teal-400" />
+                          <span>{typeof item.course === "object" ? item.course.name : item.course}</span>
                         </div>
                       )}
                     </td>

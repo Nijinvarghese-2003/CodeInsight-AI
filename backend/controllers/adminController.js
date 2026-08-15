@@ -2,6 +2,9 @@ import User from "../models/User.js";
 import Assignment from "../models/Assignment.js";
 import Submission from "../models/Submission.js";
 import PreApprovedUser from "../models/PreApprovedUser.js";
+import Department from "../models/Department.js";
+import Course from "../models/Course.js";
+import LabSubject from "../models/LabSubject.js";
 
 // @desc    Get platform metrics & stats
 // @route   GET /api/admin/stats
@@ -14,6 +17,10 @@ export const getSystemStats = async (req, res) => {
     const adminCount = await User.countDocuments({ role: "admin" });
     const pendingFacultyCount = await User.countDocuments({ role: "faculty", status: "pending" });
     const preApprovedCount = await PreApprovedUser.countDocuments();
+
+    const departmentCount = await Department.countDocuments();
+    const courseCount = await Course.countDocuments();
+    const labCount = await LabSubject.countDocuments();
 
     const totalAssignments = await Assignment.countDocuments();
     const totalSubmissions = await Submission.countDocuments();
@@ -30,6 +37,9 @@ export const getSystemStats = async (req, res) => {
         adminCount,
         pendingFacultyCount,
         preApprovedCount,
+        departmentCount,
+        courseCount,
+        labCount,
         totalAssignments,
         totalSubmissions,
         flaggedPlagiarismCount,
@@ -411,3 +421,4 @@ export const updateFacultyLabs = async (req, res) => {
     });
   }
 };
+

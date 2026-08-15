@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../../services/api";
-import { Plus, Trash2, ArrowLeft, Lock, Save, AlertCircle } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Lock, Save, AlertCircle, BookOpen } from "lucide-react";
 
-export default function CreateAssignment() {
+export default function CreateAssignment({ user }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [availableLabs, setAvailableLabs] = useState([]);
+  const [selectedLabId, setSelectedLabId] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
-    courseCode: "CS101",
-    courseName: "C Programming Lab",
+    courseCode: "",
+    courseName: "",
     requiredLanguage: "c",
     description: "",
     instructions: "",
@@ -23,6 +25,59 @@ export default function CreateAssignment() {
     { input: "5\n", expectedOutput: "120", isHidden: false },
     { input: "0\n", expectedOutput: "1", isHidden: false },
   ]);
+
+  useEffect(() => {
+    fetchFacultyLabs();
+  }, []);
+
+  const fetchFacultyLabs = async () => {
+    try {
+      // If user has populated teachingLabs, use those or fetch labs
+      if (user?.teachingLabs && user.teachingLabs.length > 0) {
+        setAvailableLabs(user.teachingLabs);
+        const first = user.teachingLabs[0];
+        if (first) {
+          setSelectedLabId(first._id || "");
+          setFormData((prev) => ({
+            ...prev,
+            courseCode: first.code || "",
+            courseName: first.name || "",
+            requiredLanguage: first.requiredLanguage || "c",
+          }));
+        }
+      } else {
+        const res = await api.getLabSubjects();
+        if (res.success && res.labSubjects) {
+          setAvailableLabs(res.labSubjects);
+          if (res.labSubjects.length > 0) {
+            const first = res.labSubjects[0];
+            setSelectedLabId(first._id);
+            setFormData((prev) => ({
+              ...prev,
+              courseCode: first.code,
+              courseName: first.name,
+              requiredLanguage: first.requiredLanguage || "c",
+            }));
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch lab subjects", err);
+    }
+  };
+
+  const handleLabSelect = (labId) => {
+    setSelectedLabId(labId);
+    const found = availableLabs.find((l) => l._id === labId);
+    if (found) {
+      setFormData((prev) => ({
+        ...prev,
+        courseCode: found.code || "",
+        courseName: found.name || "",
+        requiredLanguage: found.requiredLanguage || "c",
+      }));
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -94,9 +149,24 @@ export default function CreateAssignment() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Course & Assignment Info Card */}
         <div className="glass p-6 rounded-2xl border border-white/10 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400 border-b border-white/10 pb-2">
-            1. Course & Restricted Programming Language
-          </h2>
+          {availableLabs.length > 0 && (
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
+                <BookOpen className="w-3.5 h-3.5 text-purple-400" /> Select Lab Subject (Assigned to Faculty)
+              </label>
+              <select
+                value={selectedLabId}
+                onChange={(e) => handleLabSelect(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs bg-slate-900 focus:outline-none cursor-pointer"
+              >
+                {availableLabs.map((lab) => (
+                  <option key={lab._id} value={lab._id}>
+                    {lab.name} ({lab.code}) — Language: {lab.requiredLanguage?.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

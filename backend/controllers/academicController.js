@@ -113,10 +113,10 @@ export const createCourse = async (req, res) => {
 
 export const getCourses = async (req, res) => {
   try {
-    const { departmentId } = req.query;
+    const targetDeptId = req.query.departmentId || req.query.department;
     let query = {};
-    if (departmentId) {
-      query.department = departmentId;
+    if (targetDeptId) {
+      query.department = targetDeptId;
     }
 
     const courses = await Course.find(query)
@@ -186,10 +186,11 @@ export const createLabSubject = async (req, res) => {
 
 export const getLabSubjects = async (req, res) => {
   try {
-    const { courseId, departmentId } = req.query;
+    const targetCourseId = req.query.courseId || req.query.course;
+    const targetDeptId = req.query.departmentId || req.query.department;
     let query = {};
-    if (courseId) query.course = courseId;
-    if (departmentId) query.department = departmentId;
+    if (targetCourseId) query.course = targetCourseId;
+    if (targetDeptId) query.department = targetDeptId;
 
     const labSubjects = await LabSubject.find(query)
       .populate("course", "name code")

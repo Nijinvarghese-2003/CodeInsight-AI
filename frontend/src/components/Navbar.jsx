@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import { Code2, LogOut, User, Shield, BookOpen, Layers } from "lucide-react";
+import { Code2, LogOut, User, Shield, BookOpen, Layers, Plus } from "lucide-react";
 
 export default function Navbar({ user, onLogout }) {
   const navigate = useNavigate();
@@ -70,6 +70,12 @@ export default function Navbar({ user, onLogout }) {
                 className="text-sm font-medium text-slate-300 hover:text-purple-400 transition-colors flex items-center gap-1.5"
               >
                 <BookOpen className="w-4 h-4" /> Course Assignments
+              </Link>
+              <Link
+                to="/faculty/create-assignment"
+                className="text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white shadow-md transition-all flex items-center gap-1.5"
+              >
+                <Plus className="w-4 h-4" /> Create Assignment
               </Link>
             </>
           )}

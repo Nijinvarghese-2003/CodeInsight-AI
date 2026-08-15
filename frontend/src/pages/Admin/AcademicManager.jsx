@@ -222,26 +222,64 @@ export default function AcademicManager() {
               />
             </div>
 
+            <div>
+              <label className="block text-xs text-slate-300 mb-1">Description (Optional)</label>
+              <textarea
+                value={deptForm.description}
+                onChange={(e) => setDeptForm({ ...deptForm, description: e.target.value })}
+                placeholder="e.g. School of Computing & AI"
+                rows={2}
+                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs focus:outline-none"
+              />
+            </div>
+
             <button type="submit" className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs">
               + Save Department
             </button>
           </form>
 
           <div className="lg:col-span-7 glass rounded-2xl border border-white/10 overflow-hidden">
-            <div className="p-4 border-b border-white/10 font-bold text-xs text-white">Existing Departments</div>
-            <div className="divide-y divide-white/5">
-              {departments.map((d) => (
-                <div key={d._id} className="p-4 flex items-center justify-between hover:bg-white/5 text-xs">
-                  <div>
-                    <span className="font-bold text-white">{d.name}</span>
-                    <span className="ml-2 px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">{d.code}</span>
-                  </div>
-                  <button onClick={() => handleDeleteDepartment(d._id)} className="text-slate-400 hover:text-rose-400 p-1">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
+            <div className="p-4 border-b border-white/10 font-bold text-xs text-white flex items-center justify-between">
+              <span>Existing Departments</span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono">
+                {departments.length} Total
+              </span>
             </div>
+
+            {departments.length === 0 ? (
+              <div className="p-8 text-center space-y-2">
+                <Building2 className="w-8 h-8 text-slate-500 mx-auto" />
+                <p className="text-sm font-semibold text-slate-300">No Departments Found</p>
+                <p className="text-xs text-slate-500">
+                  Use the form on the left to add your institution's academic departments.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-white/5">
+                {departments.map((d) => (
+                  <div key={d._id} className="p-4 flex items-start justify-between hover:bg-white/5 text-xs transition-colors">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-sm">{d.name}</span>
+                        <span className="px-2 py-0.5 rounded bg-slate-800 text-amber-300 font-mono text-[10px] font-semibold border border-amber-500/20">
+                          {d.code}
+                        </span>
+                      </div>
+                      {d.description && (
+                        <p className="text-xs text-slate-400 leading-relaxed">{d.description}</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleDeleteDepartment(d._id)}
+                      className="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors shrink-0"
+                      title="Delete Department"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

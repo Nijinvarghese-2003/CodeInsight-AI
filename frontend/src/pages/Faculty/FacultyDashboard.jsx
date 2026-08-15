@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../../services/api";
-import { BookOpen, Users, ShieldAlert, Layers, Trash2, ArrowRight } from "lucide-react";
+import { BookOpen, Users, ShieldAlert, Layers, Trash2, ArrowRight, Plus } from "lucide-react";
 
 export default function FacultyDashboard({ user }) {
   const [assignments, setAssignments] = useState([]);
@@ -58,21 +58,44 @@ export default function FacultyDashboard({ user }) {
             Audit student lab submissions, view automated Judge0 execution results, and inspect AI code quality & plagiarism reports for your assigned courses.
           </p>
         </div>
+
+        <Link
+          to="/faculty/create-assignment"
+          className="px-4 py-2.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-bold text-xs flex items-center gap-2 shrink-0 shadow-lg shadow-purple-500/20 transition-transform active:scale-95 cursor-pointer"
+        >
+          <Plus className="w-4 h-4" /> Create New Assignment
+        </Link>
       </div>
 
       {/* Assignments List */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-purple-400" /> Managed Course Assignments ({assignments.length})
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-purple-400" /> Managed Course Assignments ({assignments.length})
+          </h2>
+          <Link
+            to="/faculty/create-assignment"
+            className="px-3.5 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+          >
+            <Plus className="w-4 h-4" /> Add Assignment
+          </Link>
+        </div>
 
         {assignments.length === 0 ? (
-          <div className="glass p-12 text-center rounded-2xl border border-white/10">
-            <BookOpen className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-white">No Assignments Available</h3>
-            <p className="text-slate-400 text-sm mt-1">
-              No programming lab assignments found for your assigned subjects.
-            </p>
+          <div className="glass p-12 text-center rounded-2xl border border-white/10 space-y-4">
+            <BookOpen className="w-12 h-12 text-slate-500 mx-auto" />
+            <div>
+              <h3 className="text-lg font-semibold text-white">No Assignments Available</h3>
+              <p className="text-slate-400 text-sm mt-1">
+                No programming lab assignments found for your assigned subjects. Click below to create your first assignment.
+              </p>
+            </div>
+            <Link
+              to="/faculty/create-assignment"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white text-xs font-bold shadow-lg shadow-purple-500/20 transition-transform active:scale-95"
+            >
+              <Plus className="w-4 h-4" /> Create First Assignment
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
