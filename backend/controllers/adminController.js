@@ -258,42 +258,7 @@ export const deletePreApprovedUser = async (req, res) => {
   }
 };
 
-// @desc    Seed sample pre-approved data for quick testing
-// @route   POST /api/admin/preapproved/seed
-// @access  Private/Admin
-export const seedPreApprovedDefaults = async (req, res) => {
-  try {
-    const sampleRecords = [
-      { role: "student", officialId: "CS2026-001", email: "student1@campus.edu", name: "Alice Johnson" },
-      { role: "student", officialId: "CS2026-002", email: "student2@campus.edu", name: "Bob Smith" },
-      { role: "faculty", officialId: "EMP-101", email: "faculty1@campus.edu", name: "Dr. Alan Turing" },
-      { role: "faculty", officialId: "EMP-102", email: "faculty2@campus.edu", name: "Prof. Grace Hopper" },
-    ];
 
-    let count = 0;
-    for (const rec of sampleRecords) {
-      const exists = await PreApprovedUser.findOne({
-        role: rec.role,
-        email: rec.email,
-        officialId: rec.officialId,
-      });
-      if (!exists) {
-        await PreApprovedUser.create(rec);
-        count++;
-      }
-    }
-
-    res.status(200).json({
-      success: true,
-      message: `Seeded ${count} default pre-approved records`,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message || "Failed to seed pre-approved records",
-    });
-  }
-};
 
 // --- FACULTY APPROVAL & LAB SUBJECT ASSIGNMENT ---
 

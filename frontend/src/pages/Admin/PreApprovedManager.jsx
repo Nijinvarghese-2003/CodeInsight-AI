@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../../services/api";
-import { UserCheck, Plus, Trash2, Sparkles, Building2, BookOpen, Search, ShieldCheck } from "lucide-react";
+import { UserCheck, Plus, Trash2, Building2, BookOpen, Search, ShieldCheck } from "lucide-react";
 
 export default function PreApprovedManager() {
   const [list, setList] = useState([]);
@@ -50,18 +50,6 @@ export default function PreApprovedManager() {
       if (courseRes.success) setCourses(courseRes.courses || []);
     } catch (err) {
       console.error(err);
-    }
-  };
-
-  const handleSeedDefaults = async () => {
-    try {
-      const res = await api.seedPreApprovedDefaults();
-      if (res.success) {
-        alert(res.message);
-        fetchData();
-      }
-    } catch (err) {
-      alert("Failed to seed default records");
     }
   };
 
@@ -133,12 +121,6 @@ export default function PreApprovedManager() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={handleSeedDefaults}
-            className="px-3 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 text-xs font-semibold flex items-center gap-1.5 transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5" /> Seed Demo Records
-          </button>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold flex items-center gap-1.5 transition-colors"
@@ -293,7 +275,7 @@ export default function PreApprovedManager() {
             <UserCheck className="w-8 h-8 text-slate-500 mx-auto" />
             <p className="text-sm font-semibold text-slate-300">No Pre-Approved Records Found</p>
             <p className="text-xs text-slate-500">
-              Click "Seed Demo Records" or "Add Approved User" to populate approved student/faculty IDs.
+              Click "Add Approved User" to populate approved student/faculty IDs.
             </p>
           </div>
         ) : (
