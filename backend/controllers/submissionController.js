@@ -49,8 +49,20 @@ export const submitSolution = async (req, res) => {
       code
     );
 
-    // 3. Perform AI Code Quality & Time Complexity ($O(N)$, $O(N^2)$, etc.) Analysis
-    const aiAnalysisResults = await analyzeCodeQuality(code, submittedLanguage);
+    // 3. Perform AI Code Quality & Complexity Analysis
+    const aiAnalysisResults = await analyzeCodeQuality(
+      code,
+      submittedLanguage
+    );
+
+    // 4. Determine if submission is Late (past assignment deadline)
+    let isLate = false;
+    if (assignment.deadline) {
+      const deadlineDate = new Date(assignment.deadline);
+      if (new Date() > deadlineDate) {
+        isLate = true;
+      }
+    }
 
     // Create Submission document
     const submission = await Submission.create({
@@ -65,11 +77,12 @@ export const submitSolution = async (req, res) => {
       testCaseResults: judge0Results.testCaseResults,
       aiAnalysis: aiAnalysisResults,
       plagiarism: plagiarismResults,
+      isLate,
     });
 
     const populatedSubmission = await Submission.findById(submission._id)
       .populate("student", "name rollNo email")
-      .populate("assignment", "title courseCode courseName requiredLanguage maxPoints");
+      .populate("assignment", "title courseCode courseName requiredLanguage maxPoints deadline");
 
     res.status(201).json({
       success: true,
@@ -116,7 +129,7 @@ export const getAssignmentSubmissions = async (req, res) => {
       assignment: req.params.assignmentId,
     })
       .populate("student", "name rollNo studentId email department")
-      .populate("assignment", "title courseCode courseName requiredLanguage maxPoints")
+      .populate("assignment", "title courseCode courseName requiredLanguage maxPoints deadline")
       .sort({ createdAt: -1 });
 
     res.status(200).json({

@@ -138,6 +138,14 @@ export default function CodeWorkspace({ user }) {
         </div>
       </div>
 
+      {/* LATE SUBMISSION WARNING BANNER */}
+      {assignment.deadline && new Date() > new Date(assignment.deadline) && (
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2 font-bold animate-fade-up">
+          <Clock className="w-4 h-4 text-rose-400 shrink-0" />
+          <span>⚠️ Assignment Deadline Passed: The official deadline for this assignment was {new Date(assignment.deadline).toLocaleString()}. Your submission will be recorded and marked as LATE.</span>
+        </div>
+      )}
+
       {/* Main Split Grid: Left = Description & Editor, Right = Judge0 Output & AI Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Description & Editor (7 Cols) */}

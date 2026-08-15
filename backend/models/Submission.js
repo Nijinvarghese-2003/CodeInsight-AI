@@ -76,6 +76,10 @@ const submissionSchema = new mongoose.Schema(
       gradedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
       gradedAt: { type: Date, default: null },
     },
+    isLate: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

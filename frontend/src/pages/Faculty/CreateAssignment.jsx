@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../../services/api";
-import { Plus, Trash2, ArrowLeft, Lock, Save, AlertCircle, BookOpen } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  ArrowLeft,
+  Lock,
+  Save,
+  AlertCircle,
+  BookOpen,
+  Calendar,
+  Clock,
+  Layers,
+} from "lucide-react";
 
 export default function CreateAssignment({ user }) {
   const navigate = useNavigate();
@@ -21,9 +32,18 @@ export default function CreateAssignment({ user }) {
     maxPoints: 100,
   });
 
+  // Testcases with pure freeform multiline input & output support
   const [testCases, setTestCases] = useState([
-    { input: "5\n", expectedOutput: "120", isHidden: false },
-    { input: "0\n", expectedOutput: "1", isHidden: false },
+    {
+      input: "5",
+      expectedOutput: "120",
+      isHidden: false,
+    },
+    {
+      input: "0",
+      expectedOutput: "1",
+      isHidden: false,
+    },
   ]);
 
   useEffect(() => {
@@ -32,7 +52,6 @@ export default function CreateAssignment({ user }) {
 
   const fetchFacultyLabs = async () => {
     try {
-      // If user has populated teachingLabs, use those or fetch labs
       if (user?.teachingLabs && user.teachingLabs.length > 0) {
         setAvailableLabs(user.teachingLabs);
         const first = user.teachingLabs[0];
@@ -91,7 +110,10 @@ export default function CreateAssignment({ user }) {
   };
 
   const addTestCase = () => {
-    setTestCases([...testCases, { input: "", expectedOutput: "", isHidden: false }]);
+    setTestCases([
+      ...testCases,
+      { input: "", expectedOutput: "", isHidden: false },
+    ]);
   };
 
   const removeTestCase = (index) => {
@@ -114,9 +136,16 @@ export default function CreateAssignment({ user }) {
     setErrorMsg("");
 
     try {
+      const cleanedTestCases = testCases.map((tc) => ({
+        input: tc.input || "",
+        expectedOutput: tc.expectedOutput || "",
+        isHidden: tc.isHidden,
+      }));
+
       const payload = {
         ...formData,
-        testCases,
+        labSubjectId: selectedLabId || undefined,
+        testCases: cleanedTestCases,
       };
 
       const res = await api.createAssignment(payload);
@@ -132,23 +161,44 @@ export default function CreateAssignment({ user }) {
     }
   };
 
+  const getFormattedDeadlineDisplay = () => {
+    if (!formData.deadline) return null;
+    const d = new Date(formData.deadline);
+    if (isNaN(d.getTime())) return null;
+    return d.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <Link to="/faculty/dashboard" className="text-xs text-purple-400 font-semibold hover:underline flex items-center gap-1 mb-1">
+          <Link
+            to="/faculty/dashboard"
+            className="text-xs text-purple-400 font-semibold hover:underline flex items-center gap-1 mb-1"
+          >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Faculty Console
           </Link>
           <h1 className="text-2xl font-bold text-white">Create New Course Lab Assignment</h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Specify course parameters, lock the programming language, and set evaluation test cases.
+            Specify course parameters, lock the programming language, set deadline, and add test cases with freeform inputs and outputs.
           </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Course & Assignment Info Card */}
+        {/* 1. Basic Course & Assignment Info Card */}
         <div className="glass p-6 rounded-2xl border border-white/10 space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400 border-b border-white/10 pb-2">
+            1. Course & Restricted Programming Language
+          </h2>
+
           {availableLabs.length > 0 && (
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
@@ -226,35 +276,69 @@ export default function CreateAssignment({ user }) {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                placeholder="e.g. Factorial and Recursion Lab"
+                placeholder="e.g. Factorial & Array Recursion Lab"
                 className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Submission Deadline *</label>
-              <input
-                type="datetime-local"
-                name="deadline"
-                value={formData.deadline}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
-              />
+          {/* CALENDAR SUBMISSION DEADLINE PICKER */}
+          <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-900/30 via-indigo-900/20 to-slate-900 border border-purple-500/30 space-y-3">
+            <div className="border-b border-white/10 pb-2">
+              <label className="text-xs font-bold text-white flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-purple-400" /> Submission Deadline (Select Date & Time from Calendar) *
+              </label>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Max Score Points</label>
-              <input
-                type="number"
-                name="maxPoints"
-                value={formData.maxPoints}
-                onChange={handleInputChange}
-                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+              <div>
+                <div className="relative">
+                  <input
+                    type="datetime-local"
+                    name="deadline"
+                    value={formData.deadline}
+                    onChange={handleInputChange}
+                    onClick={(e) => {
+                      try {
+                        e.target.showPicker();
+                      } catch (err) {}
+                    }}
+                    required
+                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-purple-500/40 text-white text-xs font-mono focus:outline-none focus:ring-2 focus:ring-purple-500/50 shadow-inner cursor-pointer"
+                  />
+                </div>
+                <span className="text-[10px] text-slate-400 mt-1 block">
+                  Click to open calendar & time selector. Submissions after this deadline will be tagged as <strong>LATE</strong>.
+                </span>
+              </div>
+
+              <div>
+                {formData.deadline ? (
+                  <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-200 text-xs space-y-1">
+                    <div className="text-[10px] text-purple-300 font-semibold uppercase">Official Scheduled Deadline</div>
+                    <div className="font-bold text-white flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                      <span>{getFormattedDeadlineDisplay()}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl bg-slate-900 border border-white/5 text-slate-500 text-xs italic">
+                    No deadline selected yet. Click on date box to pick from calendar.
+                  </div>
+                )}
+              </div>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 mb-1">Max Score Points</label>
+            <input
+              type="number"
+              name="maxPoints"
+              value={formData.maxPoints}
+              onChange={handleInputChange}
+              className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
+            />
           </div>
 
           <div>
@@ -271,35 +355,44 @@ export default function CreateAssignment({ user }) {
           </div>
         </div>
 
-        {/* Test Cases Builder Card */}
+        {/* 2. Test Cases Builder Card (Pure Freeform Stdin & Stdout) */}
         <div className="glass p-6 rounded-2xl border border-white/10 space-y-4">
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
-              2. Judge0 Test Suite Cases ({testCases.length})
-            </h2>
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400 flex items-center gap-2">
+                <Layers className="w-4 h-4" /> 2. Judge0 Test Suite Cases ({testCases.length})
+              </h2>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Provide freeform standard input (stdin) and expected output (stdout) for each test case. Multiple lines/values are supported directly.
+              </p>
+            </div>
 
             <button
               type="button"
               onClick={addTestCase}
-              className="px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 text-xs font-semibold border border-purple-500/30 hover:bg-purple-500/30 flex items-center gap-1"
+              className="px-3 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white text-xs font-semibold shadow-md flex items-center gap-1 transition-transform active:scale-95 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" /> Add Test Case
             </button>
           </div>
 
           <div className="space-y-4">
-            {testCases.map((tc, index) => (
-              <div key={index} className="bg-slate-900/60 p-4 rounded-xl border border-white/5 space-y-3 relative">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold text-slate-300">
-                    Test Case #{index + 1}
+            {testCases.map((tc, tcIdx) => (
+              <div
+                key={tcIdx}
+                className="bg-slate-900/60 p-4 rounded-xl border border-white/10 space-y-3 relative hover:border-purple-500/30 transition-all"
+              >
+                <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                  <span className="text-xs font-mono font-bold text-white px-2.5 py-0.5 rounded bg-purple-500/20 border border-purple-500/30">
+                    Test Case #{tcIdx + 1}
                   </span>
+
                   <div className="flex items-center gap-3">
                     <label className="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={tc.isHidden}
-                        onChange={(e) => handleTestCaseChange(index, "isHidden", e.target.checked)}
+                        onChange={(e) => handleTestCaseChange(tcIdx, "isHidden", e.target.checked)}
                         className="rounded border-slate-700 text-purple-500 focus:ring-0"
                       />
                       <span>Is Hidden Test Case</span>
@@ -307,8 +400,9 @@ export default function CreateAssignment({ user }) {
                     {testCases.length > 1 && (
                       <button
                         type="button"
-                        onClick={() => removeTestCase(index)}
-                        className="text-slate-400 hover:text-rose-400 p-1"
+                        onClick={() => removeTestCase(tcIdx)}
+                        className="text-slate-400 hover:text-rose-400 p-1 cursor-pointer"
+                        title="Delete Test Case"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -316,27 +410,33 @@ export default function CreateAssignment({ user }) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div>
-                    <label className="block text-slate-400 mb-1">Standard Input (stdin)</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  {/* FREEFORM STANDARD INPUT (STDIN) */}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-slate-300">
+                      Freeform Standard Input (stdin)
+                    </label>
                     <textarea
-                      rows={2}
+                      rows={4}
                       value={tc.input}
-                      onChange={(e) => handleTestCaseChange(index, "input", e.target.value)}
-                      placeholder="Input data passed to program..."
-                      className="w-full bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-slate-200 font-mono text-xs focus:outline-none resize-none"
+                      onChange={(e) => handleTestCaseChange(tcIdx, "input", e.target.value)}
+                      placeholder="Enter input data passed to standard input (multiple lines or space-separated values)..."
+                      className="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-slate-100 font-mono text-xs focus:outline-none focus:border-purple-500/50 resize-none"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-slate-400 mb-1">Expected Output (stdout) *</label>
+                  {/* FREEFORM EXPECTED OUTPUT (STDOUT) */}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-slate-300">
+                      Freeform Expected Output (stdout) *
+                    </label>
                     <textarea
-                      rows={2}
+                      rows={4}
                       value={tc.expectedOutput}
-                      onChange={(e) => handleTestCaseChange(index, "expectedOutput", e.target.value)}
+                      onChange={(e) => handleTestCaseChange(tcIdx, "expectedOutput", e.target.value)}
                       required
-                      placeholder="Exact expected output..."
-                      className="w-full bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-emerald-400 font-mono text-xs focus:outline-none resize-none"
+                      placeholder="Enter exact expected output produced on standard output (multiple lines supported)..."
+                      className="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-emerald-400 font-mono text-xs focus:outline-none focus:border-emerald-500/50 resize-none"
                     />
                   </div>
                 </div>
@@ -362,7 +462,7 @@ export default function CreateAssignment({ user }) {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all flex items-center gap-2"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer"
           >
             <Save className="w-4 h-4" /> Publish Lab Assignment
           </button>

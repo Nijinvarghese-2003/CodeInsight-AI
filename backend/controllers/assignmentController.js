@@ -9,6 +9,9 @@ export const createAssignment = async (req, res) => {
     const {
       labSubjectId,
       title,
+      courseCode,
+      courseName,
+      requiredLanguage,
       description,
       instructions,
       testCases,
@@ -16,44 +19,46 @@ export const createAssignment = async (req, res) => {
       maxPoints,
     } = req.body;
 
-    if (!labSubjectId || !title || !description || !deadline) {
+    if (!title || !description || !deadline) {
       return res.status(400).json({
         success: false,
-        message: "Please fill all required fields: labSubjectId, title, description, deadline",
+        message: "Please fill all required fields: title, description, deadline",
       });
     }
 
-    const labSubject = await LabSubject.findById(labSubjectId)
-      .populate("course", "name code")
-      .populate("department", "name code");
+    let departmentId = null;
+    let courseId = null;
+    let targetLabId = labSubjectId || null;
+    let finalCourseCode = courseCode || "LAB101";
+    let finalCourseName = courseName || "Programming Lab";
+    let finalRequiredLang = (requiredLanguage || "c").toLowerCase();
 
-    if (!labSubject) {
-      return res.status(404).json({
-        success: false,
-        message: "Selected lab subject not found",
-      });
-    }
+    if (labSubjectId) {
+      const labSubject = await LabSubject.findById(labSubjectId)
+        .populate("course", "name code")
+        .populate("department", "name code");
 
-    // Verify faculty is assigned to this lab subject or is admin
-    if (
-      req.user.role === "faculty" &&
-      req.user.teachingLabs &&
-      !req.user.teachingLabs.some((l) => l.toString() === labSubject._id.toString())
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "You are not authorized to create assignments for this lab subject. It is not in your assigned teaching labs list.",
-      });
+      if (labSubject) {
+        departmentId = labSubject.department?._id || null;
+        courseId = labSubject.course?._id || null;
+        finalCourseCode = labSubject.code || finalCourseCode;
+        finalCourseName = labSubject.course?.name
+          ? `${labSubject.course.name} - ${labSubject.name}`
+          : labSubject.name || finalCourseName;
+        finalRequiredLang = labSubject.requiredLanguage
+          ? labSubject.requiredLanguage.toLowerCase()
+          : finalRequiredLang;
+      }
     }
 
     const assignment = await Assignment.create({
       title,
-      department: labSubject.department._id,
-      course: labSubject.course._id,
-      labSubject: labSubject._id,
-      courseCode: labSubject.code,
-      courseName: `${labSubject.course.name} - ${labSubject.name}`,
-      requiredLanguage: labSubject.requiredLanguage.toLowerCase(),
+      department: departmentId,
+      course: courseId,
+      labSubject: targetLabId,
+      courseCode: finalCourseCode,
+      courseName: finalCourseName,
+      requiredLanguage: finalRequiredLang,
       description,
       instructions: instructions || "",
       testCases: testCases || [],
