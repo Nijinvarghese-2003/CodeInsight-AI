@@ -4,6 +4,15 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
+// Register all Mongoose models
+import "./models/Department.js";
+import "./models/Course.js";
+import "./models/LabSubject.js";
+import "./models/User.js";
+import "./models/Assignment.js";
+import "./models/Submission.js";
+import "./models/PreApprovedUser.js";
+
 import authRoutes from "./routes/authRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
 import submissionRoutes from "./routes/submissionRoutes.js";

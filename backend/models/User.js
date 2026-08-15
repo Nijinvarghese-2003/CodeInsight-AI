@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import "./Department.js";
+import "./Course.js";
+import "./LabSubject.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -42,8 +45,26 @@ const userSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["active", "inactive", "blocked"],
+      enum: ["active", "inactive", "blocked", "pending"],
       default: "active",
+    },
+
+    isApproved: {
+      type: Boolean,
+      default: true,
+    },
+
+    // Department & Course references
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      default: null,
+    },
+
+    course: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      default: null,
     },
 
     // Student Fields
@@ -67,12 +88,6 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
-    // Common for Student & Faculty
-    department: {
-      type: String,
-      default: null,
-    },
-
     // Faculty Fields
     employeeId: {
       type: String,
@@ -83,6 +98,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+
+    teachingLabs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "LabSubject",
+      },
+    ],
 
     // Security
     lastLogin: {

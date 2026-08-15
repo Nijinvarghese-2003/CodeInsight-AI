@@ -1,4 +1,8 @@
 import mongoose from "mongoose";
+import "./Department.js";
+import "./Course.js";
+import "./LabSubject.js";
+import "./User.js";
 
 const testCaseSchema = new mongoose.Schema({
   input: {
@@ -21,6 +25,21 @@ const assignmentSchema = new mongoose.Schema(
       type: String,
       required: [true, "Assignment title is required"],
       trim: true,
+    },
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      default: null,
+    },
+    course: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      default: null,
+    },
+    labSubject: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "LabSubject",
+      default: null,
     },
     courseCode: {
       type: String,
