@@ -2,15 +2,17 @@ import { GraduationCap, BookOpen, Shield } from "lucide-react";
 
 export default function RoleSelector({ value = "student", onChange }) {
   const roles = [
-    { id: "student", label: "Student", icon: GraduationCap, color: "teal" },
-    { id: "faculty", label: "Faculty", icon: BookOpen, color: "purple" },
+    { id: "student", label: "Student", icon: GraduationCap, color: "cyan" },
+    { id: "faculty", label: "Faculty", icon: BookOpen, color: "violet" },
     { id: "admin", label: "Admin", icon: Shield, color: "amber" },
   ];
 
   return (
     <div className="space-y-1.5">
-      <label className="block text-xs font-semibold text-slate-300">Select Role *</label>
-      <div className="grid grid-cols-3 gap-2">
+      <label className="block text-xs font-semibold text-slate-300">
+        Select Account Role <span className="text-cyan-400 font-bold">*</span>
+      </label>
+      <div className="grid grid-cols-3 gap-2.5">
         {roles.map((r) => {
           const Icon = r.icon;
           const isSelected = value === r.id;
@@ -19,14 +21,14 @@ export default function RoleSelector({ value = "student", onChange }) {
               key={r.id}
               type="button"
               onClick={() => onChange(r.id)}
-              className={`p-2.5 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 border transition-all ${
+              className={`p-3 rounded-2xl text-xs font-bold flex flex-col items-center gap-1.5 border transition-all duration-200 cursor-pointer ${
                 isSelected
                   ? r.id === "student"
-                    ? "bg-teal-500/20 text-teal-300 border-teal-500/50"
+                    ? "bg-cyan-500/15 text-cyan-300 border-cyan-400/60 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
                     : r.id === "faculty"
-                    ? "bg-purple-500/20 text-purple-300 border-purple-500/50"
-                    : "bg-amber-500/20 text-amber-300 border-amber-500/50"
-                  : "bg-slate-900/60 text-slate-400 border-white/5 hover:border-white/20"
+                    ? "bg-violet-500/15 text-violet-300 border-violet-400/60 shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                    : "bg-amber-500/15 text-amber-300 border-amber-400/60 shadow-[0_0_15px_rgba(245,158,11,0.3)]"
+                  : "bg-[#090e1a]/80 text-slate-400 border-white/5 hover:border-white/20 hover:text-slate-200"
               }`}
             >
               <Icon className="w-4 h-4" />

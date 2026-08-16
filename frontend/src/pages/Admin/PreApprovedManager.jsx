@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../../services/api";
-import { UserCheck, Plus, Trash2, Building2, BookOpen, Search, ShieldCheck } from "lucide-react";
+import { UserCheck, Plus, Trash2, Building2, BookOpen, Search, ShieldCheck, Sparkles } from "lucide-react";
 
 export default function PreApprovedManager() {
   const [list, setList] = useState([]);
@@ -110,38 +110,40 @@ export default function PreApprovedManager() {
   return (
     <div className="space-y-6">
       {/* Header Banner & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl glass border border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl glass-panel border border-white/10 shadow-sm">
         <div>
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-emerald-400" /> Pre-Approved Registration Directory
+          <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-cyan-400" /> Pre-Approved Registration Directory
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Pre-register authorized Student ID + Official Email and Faculty ID + Official Email for automatic registration verification.
+          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            Pre-register authorized Student ID + Official Email and Faculty ID + Official Email for automatic validation.
           </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2.5 rounded-xl neu-btn-primary text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5" /> Add Approved User
+            <Plus className="w-4 h-4" /> Add Approved User
           </button>
         </div>
       </div>
 
       {/* Add Form */}
       {showAddForm && (
-        <form onSubmit={handleAddSubmit} className="glass p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 space-y-4 animate-fade-up">
-          <h3 className="text-sm font-bold text-emerald-400">Add Pre-Approved Record</h3>
+        <form onSubmit={handleAddSubmit} className="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/30 space-y-4 animate-fade-up shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
+          <h3 className="text-sm font-bold text-cyan-400 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-cyan-400" /> Add Pre-Approved Record
+          </h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Target Role *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Target Role *</label>
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none"
+                className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none cursor-pointer"
               >
                 <option value="student">Student</option>
                 <option value="faculty">Faculty</option>
@@ -149,7 +151,7 @@ export default function PreApprovedManager() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 {formData.role === "student" ? "Student ID / Roll No *" : "Faculty / Employee ID *"}
               </label>
               <input
@@ -158,41 +160,41 @@ export default function PreApprovedManager() {
                 onChange={(e) => setFormData({ ...formData, officialId: e.target.value })}
                 placeholder={formData.role === "student" ? "e.g. CS2026-001" : "e.g. EMP-101"}
                 required
-                className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none uppercase font-mono"
+                className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none uppercase font-mono shadow-inner"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Official Email *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Official Email *</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="user@campus.edu"
                 required
-                className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none"
+                className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none shadow-inner"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name (Optional)</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name (Optional)</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g. John Doe"
-                className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none"
+                className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none shadow-inner"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Department (Optional)</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Department (Optional)</label>
               <select
                 value={formData.department}
                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none"
+                className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none cursor-pointer"
               >
                 <option value="">-- Any / All Departments --</option>
                 {departments.map((d) => (
@@ -203,11 +205,11 @@ export default function PreApprovedManager() {
 
             {formData.role === "student" && (
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Course (Optional)</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Course (Optional)</label>
                 <select
                   value={formData.course}
                   onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none cursor-pointer"
                 >
                   <option value="">-- Any Course --</option>
                   {courses.map((c) => (
@@ -218,20 +220,20 @@ export default function PreApprovedManager() {
             )}
           </div>
 
-          {error && <p className="text-xs text-rose-400">{error}</p>}
+          {error && <p className="text-xs font-medium text-rose-400">{error}</p>}
 
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={() => setShowAddForm(false)}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs hover:bg-slate-700"
+              className="px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-bold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs"
+              className="px-5 py-2.5 rounded-xl neu-btn-primary font-bold text-xs shadow-md cursor-pointer disabled:opacity-50"
             >
               {submitting ? "Saving..." : "Save Pre-Approved Record"}
             </button>
@@ -242,22 +244,22 @@ export default function PreApprovedManager() {
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
             type="text"
             placeholder="Search ID, Email or Name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-9 pr-3 py-2 focus:outline-none"
+            className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl pl-9 pr-3.5 py-2.5 text-xs focus:outline-none focus:border-cyan-500/50 shadow-inner"
           />
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="text-slate-400">Filter Role:</span>
+          <span className="text-slate-400 font-semibold">Filter Role:</span>
           <select
             value={filterRole}
             onChange={(e) => setFilterRole(e.target.value)}
-            className="bg-slate-900 border border-slate-800 text-white rounded-xl px-3 py-1.5 focus:outline-none"
+            className="bg-[#090e1a] border border-white/10 text-white rounded-xl px-3.5 py-2 text-xs focus:outline-none cursor-pointer"
           >
             <option value="all">All Roles</option>
             <option value="student">Student Only</option>
@@ -267,21 +269,21 @@ export default function PreApprovedManager() {
       </div>
 
       {/* Records Table */}
-      <div className="glass rounded-2xl border border-white/10 overflow-hidden">
+      <div className="glass-panel rounded-3xl border border-white/10 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
         {loading ? (
           <div className="p-8 text-center text-slate-400 text-xs">Loading pre-approved records...</div>
         ) : filteredList.length === 0 ? (
-          <div className="p-8 text-center space-y-2">
-            <UserCheck className="w-8 h-8 text-slate-500 mx-auto" />
-            <p className="text-sm font-semibold text-slate-300">No Pre-Approved Records Found</p>
-            <p className="text-xs text-slate-500">
+          <div className="p-12 text-center space-y-2.5">
+            <UserCheck className="w-10 h-10 text-slate-500 mx-auto" />
+            <p className="text-sm font-bold text-slate-200">No Pre-Approved Records Found</p>
+            <p className="text-xs text-slate-400">
               Click "Add Approved User" to populate approved student/faculty IDs.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-900/80 text-slate-400 uppercase font-mono border-b border-white/10">
+              <thead className="bg-[#090e1a] text-slate-400 uppercase font-mono border-b border-white/10">
                 <tr>
                   <th className="p-4">Official ID</th>
                   <th className="p-4">Official Email</th>
@@ -294,7 +296,7 @@ export default function PreApprovedManager() {
               <tbody className="divide-y divide-white/5">
                 {filteredList.map((item) => (
                   <tr key={item._id} className="hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-mono font-bold text-emerald-400">
+                    <td className="p-4 font-mono font-bold text-cyan-400">
                       {item.officialId}
                     </td>
                     <td className="p-4 text-white font-medium">
@@ -303,37 +305,37 @@ export default function PreApprovedManager() {
                     <td className="p-4">
                       <span className={`px-2.5 py-1 rounded-full font-bold text-[10px] uppercase ${
                         item.role === "student"
-                          ? "bg-teal-500/20 text-teal-300 border border-teal-500/30"
-                          : "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                          ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
+                          : "bg-violet-500/15 text-violet-300 border border-violet-500/30"
                       }`}>
                         {item.role}
                       </span>
                     </td>
                     <td className="p-4 text-slate-300">
-                      <div className="font-semibold text-white">{item.name || "N/A"}</div>
+                      <div className="font-bold text-white">{item.name || "N/A"}</div>
                       {item.department && (
                         <div className="text-[10px] text-amber-300 flex items-center gap-1 mt-0.5">
                           <Building2 className="w-3 h-3 text-amber-400" />
                           <span>{typeof item.department === "object" ? item.department.name : item.department}</span>
                           {item.department.code && (
-                            <span className="font-mono text-[9px] px-1 rounded bg-slate-800 text-amber-300">
+                            <span className="font-mono text-[9px] px-1 rounded bg-[#090e1a] text-amber-300 border border-amber-500/20">
                               {item.department.code}
                             </span>
                           )}
                         </div>
                       )}
                       {item.course && (
-                        <div className="text-[10px] text-teal-300 flex items-center gap-1 mt-0.5">
-                          <BookOpen className="w-3 h-3 text-teal-400" />
+                        <div className="text-[10px] text-cyan-300 flex items-center gap-1 mt-0.5 font-medium">
+                          <BookOpen className="w-3 h-3 text-cyan-400" />
                           <span>{typeof item.course === "object" ? item.course.name : item.course}</span>
                         </div>
                       )}
                     </td>
                     <td className="p-4">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
                         item.isRegistered
-                          ? "bg-emerald-500/20 text-emerald-300"
-                          : "bg-amber-500/20 text-amber-300"
+                          ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                          : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
                       }`}>
                         {item.isRegistered ? "Registered" : "Pending Registration"}
                       </span>
@@ -341,7 +343,7 @@ export default function PreApprovedManager() {
                     <td className="p-4 text-right">
                       <button
                         onClick={() => handleDelete(item._id)}
-                        className="p-1.5 rounded-lg text-rose-400 hover:bg-rose-500/20 transition-colors"
+                        className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
                         title="Delete Record"
                       >
                         <Trash2 className="w-4 h-4" />

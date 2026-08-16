@@ -12,6 +12,7 @@ import {
   Calendar,
   Clock,
   Layers,
+  Sparkles,
 } from "lucide-react";
 
 export default function CreateAssignment({ user }) {
@@ -181,33 +182,33 @@ export default function CreateAssignment({ user }) {
         <div>
           <Link
             to="/faculty/dashboard"
-            className="text-xs text-purple-400 font-semibold hover:underline flex items-center gap-1 mb-1"
+            className="text-xs text-violet-400 font-bold hover:underline flex items-center gap-1 mb-1.5"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Faculty Console
           </Link>
-          <h1 className="text-2xl font-bold text-white">Create New Course Lab Assignment</h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Specify course parameters, lock the programming language, set deadline, and add test cases with freeform inputs and outputs.
+          <h1 className="text-2xl font-bold text-white">Create Course Lab Assignment</h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Specify course parameters, lock the programming language, set deadline, and add test cases.
           </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* 1. Basic Course & Assignment Info Card */}
-        <div className="glass p-6 rounded-2xl border border-white/10 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400 border-b border-white/10 pb-2">
-            1. Course & Restricted Programming Language
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 space-y-5 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-violet-400 border-b border-white/10 pb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-violet-400" /> 1. Course & Language Specification
           </h2>
 
           {availableLabs.length > 0 && (
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <BookOpen className="w-3.5 h-3.5 text-purple-400" /> Select Lab Subject (Assigned to Faculty)
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-violet-400" /> Select Lab Subject (Assigned to Faculty)
               </label>
               <select
                 value={selectedLabId}
                 onChange={(e) => handleLabSelect(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs bg-slate-900 focus:outline-none cursor-pointer"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs bg-[#090e1a] focus:outline-none cursor-pointer"
               >
                 {availableLabs.map((lab) => (
                   <option key={lab._id} value={lab._id}>
@@ -220,7 +221,7 @@ export default function CreateAssignment({ user }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Course Code *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Course Code *</label>
               <input
                 type="text"
                 name="courseCode"
@@ -228,12 +229,12 @@ export default function CreateAssignment({ user }) {
                 onChange={handleInputChange}
                 required
                 placeholder="e.g. CS101"
-                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Course Name *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Course Name *</label>
               <input
                 type="text"
                 name="courseName"
@@ -241,21 +242,21 @@ export default function CreateAssignment({ user }) {
                 onChange={handleInputChange}
                 required
                 placeholder="e.g. C Programming Lab"
-                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <Lock className="w-3.5 h-3.5 text-purple-400" /> Strictly Locked Programming Language *
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-violet-400" /> Strictly Locked Programming Language *
               </label>
               <select
                 name="requiredLanguage"
                 value={formData.requiredLanguage}
                 onChange={handleInputChange}
-                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none bg-slate-900"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none bg-[#090e1a] cursor-pointer"
               >
                 <option value="c">C (GCC)</option>
                 <option value="cpp">C++ (G++)</option>
@@ -269,7 +270,7 @@ export default function CreateAssignment({ user }) {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Assignment Title *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Assignment Title *</label>
               <input
                 type="text"
                 name="title"
@@ -277,16 +278,16 @@ export default function CreateAssignment({ user }) {
                 onChange={handleInputChange}
                 required
                 placeholder="e.g. Factorial & Array Recursion Lab"
-                className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
               />
             </div>
           </div>
 
           {/* CALENDAR SUBMISSION DEADLINE PICKER */}
-          <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-900/30 via-indigo-900/20 to-slate-900 border border-purple-500/30 space-y-3">
+          <div className="p-5 rounded-2xl bg-[#090e1a] border border-violet-500/30 space-y-3 shadow-inner">
             <div className="border-b border-white/10 pb-2">
               <label className="text-xs font-bold text-white flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-purple-400" /> Submission Deadline (Select Date & Time from Calendar) *
+                <Calendar className="w-4 h-4 text-violet-400" /> Submission Deadline (Select Date & Time) *
               </label>
             </div>
 
@@ -304,25 +305,25 @@ export default function CreateAssignment({ user }) {
                       } catch (err) {}
                     }}
                     required
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-purple-500/40 text-white text-xs font-mono focus:outline-none focus:ring-2 focus:ring-purple-500/50 shadow-inner cursor-pointer"
+                    className="w-full px-4 py-3 rounded-xl bg-[#050811] border border-violet-500/40 text-white text-xs font-mono focus:outline-none focus:ring-2 focus:ring-violet-500/50 shadow-inner cursor-pointer"
                   />
                 </div>
                 <span className="text-[10px] text-slate-400 mt-1 block">
-                  Click to open calendar & time selector. Submissions after this deadline will be tagged as <strong>LATE</strong>.
+                  Click to open calendar & time selector. Submissions after this will be marked <strong>LATE</strong>.
                 </span>
               </div>
 
               <div>
                 {formData.deadline ? (
-                  <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-200 text-xs space-y-1">
-                    <div className="text-[10px] text-purple-300 font-semibold uppercase">Official Scheduled Deadline</div>
+                  <div className="p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/30 text-violet-200 text-xs space-y-1">
+                    <div className="text-[10px] text-violet-300 font-bold uppercase">Official Scheduled Deadline</div>
                     <div className="font-bold text-white flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                      <Clock className="w-3.5 h-3.5 text-violet-400 shrink-0" />
                       <span>{getFormattedDeadlineDisplay()}</span>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-3 rounded-xl bg-slate-900 border border-white/5 text-slate-500 text-xs italic">
+                  <div className="p-3.5 rounded-xl bg-[#050811] border border-white/5 text-slate-500 text-xs italic">
                     No deadline selected yet. Click on date box to pick from calendar.
                   </div>
                 )}
@@ -331,18 +332,18 @@ export default function CreateAssignment({ user }) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Max Score Points</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Max Score Points</label>
             <input
               type="number"
               name="maxPoints"
               value={formData.maxPoints}
               onChange={handleInputChange}
-              className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
+              className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Assignment Description *</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Assignment Description *</label>
             <textarea
               name="description"
               rows={4}
@@ -350,27 +351,27 @@ export default function CreateAssignment({ user }) {
               onChange={handleInputChange}
               required
               placeholder="Describe the problem statement, inputs, outputs, and constraints..."
-              className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none resize-none"
+              className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none resize-none"
             />
           </div>
         </div>
 
         {/* 2. Test Cases Builder Card (Pure Freeform Stdin & Stdout) */}
-        <div className="glass p-6 rounded-2xl border border-white/10 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/10 pb-2">
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400 flex items-center gap-2">
-                <Layers className="w-4 h-4" /> 2. Judge0 Test Suite Cases ({testCases.length})
+              <h2 className="text-xs font-bold uppercase tracking-wider text-violet-400 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-violet-400" /> 2. Judge0 Test Suite Cases ({testCases.length})
               </h2>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Provide freeform standard input (stdin) and expected output (stdout) for each test case. Multiple lines/values are supported directly.
+              <p className="text-[11px] text-slate-400 mt-1">
+                Provide freeform standard input (stdin) and expected output (stdout) for automated evaluation.
               </p>
             </div>
 
             <button
               type="button"
               onClick={addTestCase}
-              className="px-3 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white text-xs font-semibold shadow-md flex items-center gap-1 transition-transform active:scale-95 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl neu-btn-primary text-white text-xs font-bold shadow-md flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" /> Add Test Case
             </button>
@@ -380,10 +381,10 @@ export default function CreateAssignment({ user }) {
             {testCases.map((tc, tcIdx) => (
               <div
                 key={tcIdx}
-                className="bg-slate-900/60 p-4 rounded-xl border border-white/10 space-y-3 relative hover:border-purple-500/30 transition-all"
+                className="bg-[#090e1a] p-4 sm:p-5 rounded-2xl border border-white/10 space-y-3.5 relative shadow-inner"
               >
-                <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                  <span className="text-xs font-mono font-bold text-white px-2.5 py-0.5 rounded bg-purple-500/20 border border-purple-500/30">
+                <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+                  <span className="text-xs font-mono font-bold text-white px-2.5 py-0.5 rounded-lg bg-violet-500/20 border border-violet-500/30">
                     Test Case #{tcIdx + 1}
                   </span>
 
@@ -393,7 +394,7 @@ export default function CreateAssignment({ user }) {
                         type="checkbox"
                         checked={tc.isHidden}
                         onChange={(e) => handleTestCaseChange(tcIdx, "isHidden", e.target.checked)}
-                        className="rounded border-slate-700 text-purple-500 focus:ring-0"
+                        className="rounded border-slate-700 bg-[#050811] accent-violet-500"
                       />
                       <span>Is Hidden Test Case</span>
                     </label>
@@ -401,7 +402,7 @@ export default function CreateAssignment({ user }) {
                       <button
                         type="button"
                         onClick={() => removeTestCase(tcIdx)}
-                        className="text-slate-400 hover:text-rose-400 p-1 cursor-pointer"
+                        className="text-slate-400 hover:text-rose-400 p-1 cursor-pointer transition-colors"
                         title="Delete Test Case"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -414,29 +415,29 @@ export default function CreateAssignment({ user }) {
                   {/* FREEFORM STANDARD INPUT (STDIN) */}
                   <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-slate-300">
-                      Freeform Standard Input (stdin)
+                      Standard Input (stdin)
                     </label>
                     <textarea
                       rows={4}
                       value={tc.input}
                       onChange={(e) => handleTestCaseChange(tcIdx, "input", e.target.value)}
-                      placeholder="Enter input data passed to standard input (multiple lines or space-separated values)..."
-                      className="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-slate-100 font-mono text-xs focus:outline-none focus:border-purple-500/50 resize-none"
+                      placeholder="Enter stdin input data..."
+                      className="w-full bg-[#050811] p-3 rounded-xl border border-white/10 text-slate-100 font-mono text-xs focus:outline-none focus:border-violet-500/50 resize-none shadow-inner"
                     />
                   </div>
 
                   {/* FREEFORM EXPECTED OUTPUT (STDOUT) */}
                   <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-slate-300">
-                      Freeform Expected Output (stdout) *
+                      Expected Output (stdout) *
                     </label>
                     <textarea
                       rows={4}
                       value={tc.expectedOutput}
                       onChange={(e) => handleTestCaseChange(tcIdx, "expectedOutput", e.target.value)}
                       required
-                      placeholder="Enter exact expected output produced on standard output (multiple lines supported)..."
-                      className="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-emerald-400 font-mono text-xs focus:outline-none focus:border-emerald-500/50 resize-none"
+                      placeholder="Enter exact expected output produced on stdout..."
+                      className="w-full bg-[#050811] p-3 rounded-xl border border-white/10 text-cyan-300 font-mono text-xs focus:outline-none focus:border-cyan-500/50 resize-none shadow-inner"
                     />
                   </div>
                 </div>
@@ -446,7 +447,7 @@ export default function CreateAssignment({ user }) {
         </div>
 
         {errorMsg && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4" />
             {errorMsg}
           </div>
@@ -455,14 +456,14 @@ export default function CreateAssignment({ user }) {
         <div className="flex items-center justify-end gap-4">
           <Link
             to="/faculty/dashboard"
-            className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white"
+            className="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-500/20 disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 rounded-xl neu-btn-primary text-white text-xs font-bold shadow-lg disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer"
           >
             <Save className="w-4 h-4" /> Publish Lab Assignment
           </button>

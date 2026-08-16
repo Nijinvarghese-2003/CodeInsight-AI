@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 900" width="100%" height="100%" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Arrow Marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563EB" />
+    </marker>
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <!-- Outer Frame / Card -->
+  <rect x="20" y="20" width="1310" height="860" rx="14" fill="#ffffff" stroke="#E2E8F0" stroke-width="2" />
+
+  <!-- Diagram Title Header -->
+  <text x="675" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#0F172A">
+    CodeInsight-AI : Level 1 Data Flow Diagram (DFD)
+  </text>
+  <text x="675" y="78" text-anchor="middle" font-size="13" font-weight="500" fill="#64748B">
+    Automated Lab Assignment Evaluation, Sandboxed Execution &amp; Plagiarism Detection System
+  </text>
+
+  <!-- ==================== FLOW LINES & ARROWS ==================== -->
+  
+  <!-- Student -> 1.0 Auth -->
+  <path d="M 170 185 L 320 185" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="245" y="177" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Credentials / Register</text>
+
+  <!-- Faculty -> 1.0 Auth -->
+  <path d="M 170 215 L 320 215" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+
+  <!-- Admin -> 1.0 Auth -->
+  <path d="M 170 245 L 320 245" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+
+  <!-- 1.0 Auth <-> D1 Users DB -->
+  <path d="M 390 250 L 390 320" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="435" y="290" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">User Data / Token</text>
+
+  <!-- Admin -> 2.0 Academic Management -->
+  <path d="M 170 410 L 320 410" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="245" y="402" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Dept / Course / Lab Config</text>
+
+  <!-- 2.0 Academic <-> D2 Academic DB -->
+  <path d="M 460 410 L 530 410" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="495" y="402" text-anchor="middle" font-size="10" font-weight="600" fill="#475569">Curriculum</text>
+
+  <!-- 2.0 Academic <-> D1 Users DB -->
+  <path d="M 390 380 L 390 355" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="345" y="370" text-anchor="middle" font-size="10" font-weight="600" fill="#475569">Pre-Approvals</text>
+
+  <!-- Faculty -> 3.0 Assignment Management -->
+  <path d="M 170 560 L 320 560" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="245" y="552" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Create / Edit Assignment</text>
+
+  <!-- 3.0 Assignment <-> D3 Assignment DB -->
+  <path d="M 460 560 L 530 560" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="495" y="552" text-anchor="middle" font-size="10" font-weight="600" fill="#475569">Test Cases &amp; Specs</text>
+
+  <!-- Student -> 4.0 Code Submission -->
+  <path d="M 120 260 L 120 730 L 320 730" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="220" y="722" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Source Code &amp; Language</text>
+
+  <!-- D3 Assignment DB -> 4.0 Code Submission -->
+  <path d="M 610 585 L 610 710 L 460 710" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="545" y="702" text-anchor="middle" font-size="10" font-weight="600" fill="#475569">Fetch Test Cases</text>
+
+  <!-- 4.0 Submission <-> Judge0 Engine -->
+  <path d="M 390 760 L 390 805 L 860 805 L 860 760" fill="none" stroke="#2563EB" stroke-width="1.6" marker-end="url(#arrow-blue)" />
+  <text x="625" y="820" text-anchor="middle" font-size="11" font-weight="700" fill="#1D4ED8">Execute in Sandbox / Return Execution Metrics &amp; Pass/Fail</text>
+
+  <!-- 4.0 Submission -> D4 Submissions DB -->
+  <path d="M 460 740 L 710 740" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="585" y="732" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Save Raw Submission &amp; Outputs</text>
+
+  <!-- 4.0 Submission -> 5.0 AI & Plagiarism -->
+  <path d="M 460 720 L 730 720 L 730 460 L 800 460" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="730" y="600" text-anchor="middle" transform="rotate(-90 730 600)" font-size="11" font-weight="600" fill="#475569">Trigger Code Analysis</text>
+
+  <!-- 5.0 AI & Plagiarism <-> Gemini API -->
+  <path d="M 940 440 L 1150 440" fill="none" stroke="#2563EB" stroke-width="1.6" marker-end="url(#arrow-blue)" />
+  <text x="1045" y="432" text-anchor="middle" font-size="11" font-weight="700" fill="#1D4ED8">Code / Explanation &amp; AI Feedback</text>
+
+  <!-- 5.0 AI & Plagiarism <-> D4 Submissions DB -->
+  <path d="M 870 490 L 870 690 L 790 690" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="895" y="580" text-anchor="middle" font-size="10" font-weight="600" fill="#475569">Peer Submissions / Store Similarity &amp; AI Score</text>
+
+  <!-- D4 Submissions DB -> 6.0 Evaluation & Reports -->
+  <path d="M 790 730 L 980 730 L 980 260 L 940 260" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="985" y="520" text-anchor="middle" transform="rotate(90 985 520)" font-size="10" font-weight="600" fill="#475569">Read Evaluation &amp; Plagiarism Data</text>
+
+  <!-- Faculty <-> 6.0 Evaluation & Reports -->
+  <path d="M 120 180 L 120 120 L 870 120 L 870 180" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="500" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Manual Review, Grade Override &amp; Plagiarism Inspection</text>
+
+  <!-- 6.0 Evaluation & Reports -> Student -->
+  <path d="M 800 230 L 690 230 L 690 140 L 140 140 L 140 160" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" />
+  <text x="415" y="152" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Final Grades, AI Code Insights &amp; Test Results Dashboard</text>
+
+
+  <!-- ==================== EXTERNAL ENTITIES (LEFT) ==================== -->
+  
+  <!-- Student Entity -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="160" width="120" height="46" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2" />
+    <text x="110" y="188" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A8A">Student</text>
+  </g>
+
+  <!-- Faculty Entity -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="215" width="120" height="46" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2" />
+    <text x="110" y="243" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A8A">Faculty</text>
+  </g>
+
+  <!-- Admin Entity -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="387" width="120" height="46" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2" />
+    <text x="110" y="415" text-anchor="middle" font-size="14" font-weight="700" fill="#1E3A8A">Admin</text>
+  </g>
+
+
+  <!-- ==================== PROCESSES (CIRCULAR / CAPSULES) ==================== -->
+  
+  <!-- Process 1.0: Authentication -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="180" width="140" height="70" rx="35" fill="#E0F2FE" stroke="#0284C7" stroke-width="2" />
+    <text x="390" y="210" text-anchor="middle" font-size="13" font-weight="800" fill="#0369A1">1.0</text>
+    <text x="390" y="228" text-anchor="middle" font-size="11" font-weight="700" fill="#0C4A6E">Authentication &amp;</text>
+    <text x="390" y="242" text-anchor="middle" font-size="11" font-weight="700" fill="#0C4A6E">Authorization</text>
+  </g>
+
+  <!-- Process 2.0: Academic Management -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="375" width="140" height="70" rx="35" fill="#E0E7FF" stroke="#4F46E5" stroke-width="2" />
+    <text x="390" y="405" text-anchor="middle" font-size="13" font-weight="800" fill="#4338CA">2.0</text>
+    <text x="390" y="423" text-anchor="middle" font-size="11" font-weight="700" fill="#312E81">Academic &amp; Lab</text>
+    <text x="390" y="437" text-anchor="middle" font-size="11" font-weight="700" fill="#312E81">Management</text>
+  </g>
+
+  <!-- Process 3.0: Assignment Management -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="525" width="140" height="70" rx="35" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2" />
+    <text x="390" y="555" text-anchor="middle" font-size="13" font-weight="800" fill="#6D28D9">3.0</text>
+    <text x="390" y="573" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">Assignment</text>
+    <text x="390" y="587" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">Management</text>
+  </g>
+
+  <!-- Process 4.0: Code Submission & Execution -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="695" width="140" height="70" rx="35" fill="#CCFBF1" stroke="#0D9488" stroke-width="2" />
+    <text x="390" y="725" text-anchor="middle" font-size="13" font-weight="800" fill="#0F766E">4.0</text>
+    <text x="390" y="743" text-anchor="middle" font-size="11" font-weight="700" fill="#134E4A">Code Submission</text>
+    <text x="390" y="757" text-anchor="middle" font-size="11" font-weight="700" fill="#134E4A">&amp; Execution</text>
+  </g>
+
+  <!-- Process 5.0: AI Analysis & Plagiarism Detection -->
+  <g filter="url(#shadow)">
+    <rect x="800" y="425" width="140" height="70" rx="35" fill="#FCE7F3" stroke="#DB2777" stroke-width="2" />
+    <text x="870" y="455" text-anchor="middle" font-size="13" font-weight="800" fill="#BE185D">5.0</text>
+    <text x="870" y="473" text-anchor="middle" font-size="11" font-weight="700" fill="#831843">AI Analysis &amp;</text>
+    <text x="870" y="487" text-anchor="middle" font-size="11" font-weight="700" fill="#831843">Plagiarism Check</text>
+  </g>
+
+  <!-- Process 6.0: Evaluation & Reporting -->
+  <g filter="url(#shadow)">
+    <rect x="800" y="195" width="140" height="70" rx="35" fill="#FEF3C7" stroke="#D97706" stroke-width="2" />
+    <text x="870" y="225" text-anchor="middle" font-size="13" font-weight="800" fill="#B45309">6.0</text>
+    <text x="870" y="243" text-anchor="middle" font-size="11" font-weight="700" fill="#78350F">Evaluation &amp;</text>
+    <text x="870" y="257" text-anchor="middle" font-size="11" font-weight="700" fill="#78350F">Reporting</text>
+  </g>
+
+
+  <!-- ==================== DATA STORES (PARALLEL LINES / DFD STORES) ==================== -->
+
+  <!-- D1 Users Store -->
+  <g filter="url(#shadow)">
+    <rect x="310" y="322" width="160" height="34" fill="#F8FAFC" stroke="none" />
+    <line x1="310" y1="322" x2="470" y2="322" stroke="#475569" stroke-width="2" />
+    <line x1="310" y1="356" x2="470" y2="356" stroke="#475569" stroke-width="2" />
+    <line x1="350" y1="322" x2="350" y2="356" stroke="#475569" stroke-width="1.5" />
+    <text x="330" y="344" text-anchor="middle" font-size="12" font-weight="800" fill="#0F172A">D1</text>
+    <text x="405" y="344" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Users &amp; PreApproved</text>
+  </g>
+
+  <!-- D2 Academic Structure Store -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="393" width="165" height="34" fill="#F8FAFC" stroke="none" />
+    <line x1="530" y1="393" x2="695" y2="393" stroke="#475569" stroke-width="2" />
+    <line x1="530" y1="427" x2="695" y2="427" stroke="#475569" stroke-width="2" />
+    <line x1="570" y1="393" x2="570" y2="427" stroke="#475569" stroke-width="1.5" />
+    <text x="550" y="415" text-anchor="middle" font-size="12" font-weight="800" fill="#0F172A">D2</text>
+    <text x="630" y="415" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Academic &amp; Labs</text>
+  </g>
+
+  <!-- D3 Assignments Store -->
+  <g filter="url(#shadow)">
+    <rect x="530" y="543" width="165" height="34" fill="#F8FAFC" stroke="none" />
+    <line x1="530" y1="543" x2="695" y2="543" stroke="#475569" stroke-width="2" />
+    <line x1="530" y1="577" x2="695" y2="577" stroke="#475569" stroke-width="2" />
+    <line x1="570" y1="543" x2="570" y2="577" stroke="#475569" stroke-width="1.5" />
+    <text x="550" y="565" text-anchor="middle" font-size="12" font-weight="800" fill="#0F172A">D3</text>
+    <text x="630" y="565" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Assignments &amp; Tests</text>
+  </g>
+
+  <!-- D4 Submissions & Results Store -->
+  <g filter="url(#shadow)">
+    <rect x="710" y="673" width="160" height="90" fill="#F8FAFC" stroke="none" />
+    <line x1="710" y1="673" x2="870" y2="673" stroke="#475569" stroke-width="2" />
+    <line x1="710" y1="763" x2="870" y2="763" stroke="#475569" stroke-width="2" />
+    <line x1="750" y1="673" x2="750" y2="763" stroke="#475569" stroke-width="1.5" />
+    <text x="730" y="723" text-anchor="middle" font-size="12" font-weight="800" fill="#0F172A">D4</text>
+    <text x="810" y="708" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Submissions,</text>
+    <text x="810" y="726" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">AI Insights &amp;</text>
+    <text x="810" y="744" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Plagiarism Reports</text>
+  </g>
+
+
+  <!-- ==================== EXTERNAL SERVICES / SYSTEM ENTITIES (RIGHT) ==================== -->
+
+  <!-- Judge0 Sandbox Engine -->
+  <g filter="url(#shadow)">
+    <rect x="790" y="714" width="140" height="46" rx="8" fill="#F1F5F9" stroke="#64748B" stroke-width="2" />
+    <text x="860" y="734" text-anchor="middle" font-size="12" font-weight="700" fill="#0F172A">Judge0 Engine</text>
+    <text x="860" y="750" text-anchor="middle" font-size="10" font-weight="500" fill="#64748B">(Sandboxed Compiler)</text>
+  </g>
+
+  <!-- Gemini LLM Service -->
+  <g filter="url(#shadow)">
+    <rect x="1150" y="417" width="140" height="46" rx="8" fill="#F1F5F9" stroke="#64748B" stroke-width="2" />
+    <text x="1220" y="437" text-anchor="middle" font-size="12" font-weight="700" fill="#0F172A">Gemini LLM API</text>
+    <text x="1220" y="453" text-anchor="middle" font-size="10" font-weight="500" fill="#64748B">(Code &amp; AI Analysis)</text>
+  </g>
+
+  <!-- ==================== LEGEND ==================== -->
+  <g transform="translate(60, 830)">
+    <rect x="0" y="0" width="1220" height="36" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+    
+    <!-- Entity Legend -->
+    <rect x="20" y="10" width="24" height="16" rx="3" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" />
+    <text x="52" y="23" font-size="11" font-weight="600" fill="#334155">External Entity</text>
+
+    <!-- Process Legend -->
+    <rect x="160" y="10" width="24" height="16" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.5" />
+    <text x="192" y="23" font-size="11" font-weight="600" fill="#334155">Process</text>
+
+    <!-- Data Store Legend -->
+    <line x1="260" y1="11" x2="284" y2="11" stroke="#475569" stroke-width="2" />
+    <line x1="260" y1="25" x2="284" y2="25" stroke="#475569" stroke-width="2" />
+    <line x1="268" y1="11" x2="268" y2="25" stroke="#475569" stroke-width="1" />
+    <text x="294" y="23" font-size="11" font-weight="600" fill="#334155">Data Store</text>
+
+    <!-- Data Flow Legend -->
+    <line x1="380" y1="18" x2="415" y2="18" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)" />
+    <text x="425" y="23" font-size="11" font-weight="600" fill="#334155">Data Flow</text>
+
+    <!-- External API Flow -->
+    <line x1="510" y1="18" x2="545" y2="18" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrow-blue)" />
+    <text x="555" y="23" font-size="11" font-weight="600" fill="#2563EB">External Service API Flow</text>
+  </g>
+
+</svg>

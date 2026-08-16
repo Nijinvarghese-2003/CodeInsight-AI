@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
 import AuthLayout from "../../components/AuthLayout";
 import InputField from "../../components/InputField";
 import { api } from "../../services/api";
@@ -57,7 +57,7 @@ export default function Login({ onLoginSuccess }) {
     <AuthLayout mode="login" activeRole="student">
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <InputField
-          label="Email"
+          label="Official Email"
           icon={Mail}
           type="email"
           name="email"
@@ -80,31 +80,41 @@ export default function Login({ onLoginSuccess }) {
           required
         />
 
-        <div className="flex items-center justify-between pt-1 text-sm">
-          <label className="flex cursor-pointer items-center gap-2 text-slate-400">
+        <div className="flex items-center justify-between pt-1 text-xs">
+          <label className="flex cursor-pointer items-center gap-2 text-slate-400 select-none hover:text-slate-300">
             <input
               type="checkbox"
               checked={remember}
               onChange={(e) => setRemember(e.target.checked)}
-              className="h-4 w-4 rounded border-white/10 bg-base-800 accent-role-student"
+              className="h-4 w-4 rounded border-white/10 bg-[#090e1a] accent-cyan-500 cursor-pointer"
             />
             Remember me
           </label>
         </div>
 
         {serverError && (
-          <p className="rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">
-            {serverError}
-          </p>
+          <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300 shadow-sm flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span>
+            <span>{serverError}</span>
+          </div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="shadow-neu-raised-sm mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-role-student/90 to-role-faculty/90 py-3 text-sm font-semibold text-base-900 transition-transform active:scale-[0.98] disabled:opacity-60 cursor-pointer"
+          className="w-full py-3 px-4 rounded-xl neu-btn-primary font-bold text-xs flex items-center justify-center gap-2 tracking-wide cursor-pointer disabled:opacity-60 mt-2"
         >
-          {loading && <Loader2 size={16} className="animate-spin" />}
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? (
+            <>
+              <Loader2 size={16} className="animate-spin text-white" />
+              <span>Verifying Credentials...</span>
+            </>
+          ) : (
+            <>
+              <span>Sign In to Workspace</span>
+              <ArrowRight size={15} />
+            </>
+          )}
         </button>
       </form>
     </AuthLayout>

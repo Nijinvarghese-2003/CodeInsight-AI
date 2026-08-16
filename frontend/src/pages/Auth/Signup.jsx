@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Clock,
   CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
 import AuthLayout from "../../components/AuthLayout";
 import InputField from "../../components/InputField";
@@ -172,30 +173,31 @@ export default function Signup({ onLoginSuccess }) {
     return (
       <AuthLayout mode="signup" activeRole="faculty">
         <div className="space-y-6 text-center animate-fade-up py-4">
-          <div className="mx-auto w-14 h-14 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center">
-            <Clock className="w-8 h-8 text-purple-400 animate-pulse" />
+          <div className="mx-auto w-16 h-16 rounded-3xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+            <Clock className="w-8 h-8 text-violet-400 animate-pulse" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-white">Registration Submitted</h2>
-            <p className="text-xs text-purple-300 font-medium mt-1">Pending Admin Approval & Lab Subject Assignment</p>
+            <p className="text-xs text-violet-300 font-semibold mt-1">Pending Admin Approval & Lab Subject Assignment</p>
           </div>
 
-          <div className="glass p-4 rounded-xl border border-purple-500/30 text-xs text-slate-300 leading-relaxed text-left space-y-2">
-            <p className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span><strong>Pre-Verification Passed:</strong> Your Faculty ID and Official Email match campus records.</span>
+          <div className="glass p-5 rounded-2xl border border-violet-500/30 text-xs text-slate-300 leading-relaxed text-left space-y-3 shadow-md">
+            <p className="flex items-start gap-2.5">
+              <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+              <span><strong className="text-white">Pre-Verification Passed:</strong> Your Faculty ID and Official Email match campus records.</span>
             </p>
-            <p className="flex items-start gap-2">
+            <p className="flex items-start gap-2.5">
               <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-              <span><strong>Admin Approval Required:</strong> An administrator will assign your teaching lab subjects and activate your account shortly.</span>
+              <span><strong className="text-white">Admin Approval Required:</strong> An administrator will assign your teaching lab subjects and activate your account shortly.</span>
             </p>
           </div>
 
           <button
             onClick={() => navigate("/login")}
-            className="w-full py-3 rounded-xl bg-purple-500 text-white font-bold text-xs hover:bg-purple-400 transition-colors shadow-lg cursor-pointer"
+            className="w-full py-3 rounded-xl neu-btn-primary font-bold text-xs cursor-pointer shadow-lg flex items-center justify-center gap-2"
           >
-            Go to Login Page
+            <span>Proceed to Login Page</span>
+            <ArrowRight size={15} />
           </button>
         </div>
       </AuthLayout>
@@ -208,19 +210,19 @@ export default function Signup({ onLoginSuccess }) {
         <RoleSelector value={form.role} onChange={handleRoleChange} />
 
         <InputField
-          label="Full name"
+          label="Full Name"
           icon={User}
           name="name"
           value={form.name}
           onChange={handleChange}
-          placeholder="e.g. John Doe"
+          placeholder="e.g. Alex Rivera"
           error={errors.name}
           required
         />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <InputField
-            label="Official Email (Pre-verified)"
+            label="Official Campus Email"
             icon={Mail}
             type="email"
             name="email"
@@ -231,7 +233,7 @@ export default function Signup({ onLoginSuccess }) {
             required
           />
           <InputField
-            label="Phone"
+            label="Contact Phone"
             icon={Phone}
             type="tel"
             name="phone"
@@ -249,12 +251,12 @@ export default function Signup({ onLoginSuccess }) {
             name="password"
             value={form.password}
             onChange={handleChange}
-            placeholder="At least 6 characters"
+            placeholder="At least 6 chars"
             error={errors.password}
             required
           />
           <InputField
-            label="Confirm password"
+            label="Confirm Password"
             icon={Lock}
             type="password"
             name="confirmPassword"
@@ -266,10 +268,10 @@ export default function Signup({ onLoginSuccess }) {
           />
         </div>
 
-        {/* DEPARTMENT DROPDOWN (Added by Admin) */}
-        <div className="space-y-1">
-          <label className="block text-xs font-semibold text-slate-300 flex items-center gap-1">
-            <Building2 className="w-3.5 h-3.5 text-teal-400" /> Select Department *
+        {/* DEPARTMENT DROPDOWN */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+            <Building2 className="w-3.5 h-3.5 text-cyan-400" /> Select Department <span className="text-cyan-400 font-bold">*</span>
           </label>
           <div className="relative">
             <select
@@ -278,10 +280,10 @@ export default function Signup({ onLoginSuccess }) {
               onChange={(e) => handleDepartmentChange(e.target.value)}
               required
               disabled={loadingDepts}
-              className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs bg-slate-900 focus:outline-none disabled:opacity-50 appearance-none cursor-pointer"
+              className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs bg-[#090e1a] focus:outline-none disabled:opacity-50 appearance-none cursor-pointer"
             >
               <option value="">
-                {loadingDepts ? "Loading departments..." : "-- Choose Department (Admin Added) --"}
+                {loadingDepts ? "Loading departments..." : "-- Choose Department --"}
               </option>
               {departments.map((d) => (
                 <option key={d._id} value={d._id}>
@@ -289,36 +291,36 @@ export default function Signup({ onLoginSuccess }) {
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
               <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
                 <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
               </svg>
             </div>
           </div>
-          {errors.department && <p className="text-[11px] text-rose-400">{errors.department}</p>}
+          {errors.department && <p className="text-[11px] font-medium text-rose-400">{errors.department}</p>}
           {!loadingDepts && departments.length === 0 && (
-            <p className="text-[11px] text-amber-400">
-              ⚠️ No departments added yet. Please ask an Administrator to add departments in the Admin Panel.
+            <p className="text-[11px] text-amber-400 font-medium">
+              ⚠️ No departments added yet. Please ask an Administrator to add departments.
             </p>
           )}
         </div>
 
         {/* STUDENT ROLE FIELDS */}
         {form.role === "student" && (
-          <div className="animate-fade-up space-y-4 rounded-xl border border-teal-500/20 bg-teal-500/5 p-4">
+          <div className="animate-fade-up space-y-3.5 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wider text-role-student flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-teal-400" /> Student Verification & Program
+              <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-cyan-400" /> Student Verification & Program
               </p>
             </div>
-            <p className="text-[11px] text-slate-400 leading-snug">
-              Student ID + Official Email will be verified against pre-approved campus records.
+            <p className="text-[11px] text-slate-300 leading-snug">
+              Student ID + Official Email will be validated against pre-approved campus records.
             </p>
 
-            {/* COURSE DROPDOWN (Filtered by Selected Department) */}
-            <div className="space-y-1">
-              <label className="block text-xs font-semibold text-slate-300 flex items-center gap-1">
-                <BookOpen className="w-3.5 h-3.5 text-teal-400" /> Select Course / Program *
+            {/* COURSE DROPDOWN */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-cyan-400" /> Select Course / Program <span className="text-cyan-400 font-bold">*</span>
               </label>
               <div className="relative">
                 <select
@@ -327,7 +329,7 @@ export default function Signup({ onLoginSuccess }) {
                   onChange={handleChange}
                   disabled={!form.department}
                   required
-                  className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs bg-slate-900 focus:outline-none disabled:opacity-50 appearance-none cursor-pointer"
+                  className="w-full px-3.5 py-2.5 rounded-xl neu-input text-white text-xs bg-[#090e1a] focus:outline-none disabled:opacity-50 appearance-none cursor-pointer"
                 >
                   <option value="">
                     {form.department
@@ -342,18 +344,18 @@ export default function Signup({ onLoginSuccess }) {
                     </option>
                   ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                   <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
                     <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                   </svg>
                 </div>
               </div>
-              {errors.course && <p className="text-[11px] text-rose-400">{errors.course}</p>}
+              {errors.course && <p className="text-[11px] font-medium text-rose-400">{errors.course}</p>}
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <InputField
-                label="Student ID / Roll No *"
+                label="Student ID / Roll No"
                 icon={Hash}
                 name="rollNo"
                 value={form.rollNo}
@@ -371,34 +373,36 @@ export default function Signup({ onLoginSuccess }) {
                 onChange={handleChange}
                 placeholder="1–8"
               />
-              <InputField
-                label="Batch"
-                icon={BookMarked}
-                name="batch"
-                value={form.batch}
-                onChange={handleChange}
-                placeholder="2024–2028"
-              />
+              <div className="sm:col-span-2">
+                <InputField
+                  label="Batch Year"
+                  icon={BookMarked}
+                  name="batch"
+                  value={form.batch}
+                  onChange={handleChange}
+                  placeholder="2024–2028"
+                />
+              </div>
             </div>
           </div>
         )}
 
         {/* FACULTY ROLE FIELDS */}
         {form.role === "faculty" && (
-          <div className="animate-fade-up space-y-4 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4">
+          <div className="animate-fade-up space-y-3.5 rounded-2xl border border-violet-500/20 bg-violet-500/5 p-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wider text-role-faculty flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-purple-400" /> Faculty Verification & Details
+              <p className="text-xs font-bold uppercase tracking-wider text-violet-400 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-violet-400" /> Faculty Verification & Details
               </p>
             </div>
             <p className="text-[11px] text-slate-300 leading-snug">
               Faculty ID + Official Email will be verified against campus records. <br />
-              <strong className="text-purple-300">Lab subjects will be assigned by Administrator upon approval.</strong>
+              <strong className="text-violet-300 font-semibold">Lab subjects will be assigned by Administrator upon approval.</strong>
             </p>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <InputField
-                label="Faculty / Employee ID *"
+                label="Faculty / Employee ID"
                 icon={IdCard}
                 name="employeeId"
                 value={form.employeeId}
@@ -420,18 +424,28 @@ export default function Signup({ onLoginSuccess }) {
         )}
 
         {serverError && (
-          <p className="rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">
-            {serverError}
-          </p>
+          <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300 shadow-sm flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span>
+            <span>{serverError}</span>
+          </div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="shadow-neu-raised-sm mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-role-student/90 to-role-faculty/90 py-3 text-sm font-semibold text-base-900 transition-transform active:scale-[0.98] disabled:opacity-60 cursor-pointer"
+          className="w-full py-3 px-4 rounded-xl neu-btn-primary font-bold text-xs flex items-center justify-center gap-2 tracking-wide cursor-pointer disabled:opacity-60 mt-2"
         >
-          {loading && <Loader2 size={16} className="animate-spin" />}
-          {loading ? "Verifying & Creating account…" : "Create account"}
+          {loading ? (
+            <>
+              <Loader2 size={16} className="animate-spin text-white" />
+              <span>Verifying & Creating Account...</span>
+            </>
+          ) : (
+            <>
+              <span>Create Account</span>
+              <ArrowRight size={15} />
+            </>
+          )}
         </button>
       </form>
     </AuthLayout>

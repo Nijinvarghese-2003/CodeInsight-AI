@@ -17,6 +17,7 @@ import {
   X,
   Search,
   GraduationCap,
+  Sparkles,
 } from "lucide-react";
 import AcademicManager from "./AcademicManager";
 import PreApprovedManager from "./PreApprovedManager";
@@ -149,7 +150,10 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-400"></div>
+        <div className="relative">
+          <div className="w-12 h-12 rounded-full border-2 border-amber-500/20 border-t-amber-400 animate-spin"></div>
+          <div className="w-8 h-8 rounded-full border-2 border-violet-500/20 border-t-violet-400 animate-spin absolute top-2 left-2"></div>
+        </div>
       </div>
     );
   }
@@ -157,23 +161,26 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Admin Header Banner */}
-      <div className="glass p-6 sm:p-8 rounded-2xl border border-white/10 bg-gradient-to-r from-amber-900/20 via-purple-900/20 to-indigo-900/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-amber-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-1">
-            <Shield className="w-4 h-4 text-amber-400" /> System Governance & Administration
-          </span>
-          <h1 className="text-2xl font-bold text-white mt-1">
-            Registration Pre-Verification & Admin Approval Hub
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 relative overflow-hidden bg-gradient-to-r from-[#111827] via-[#1a1528] to-[#111827] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-[0_15px_40px_rgba(0,0,0,0.6)]">
+        {/* Glow orb */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="relative z-10 space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-wider">
+            <Shield className="w-3.5 h-3.5 text-amber-400" /> Admin Console
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Academic Governance & Pre-Verification Hub
           </h1>
-          <p className="text-slate-300 text-sm mt-1">
+          <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
             Manage Registered Users, Academic Departments & Courses, Faculty Approvals, and Pre-Approved Registration Directory.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 z-10">
           <button
             onClick={fetchAdminData}
-            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/20 text-xs font-semibold flex items-center gap-1.5 shrink-0 cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-[#090e1a] hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 shrink-0 cursor-pointer shadow-md transition-all"
           >
             <RefreshCw className="w-3.5 h-3.5" /> Refresh Analytics
           </button>
@@ -188,15 +195,15 @@ export default function AdminDashboard() {
               setAdminSection("users");
               setFilterRole("all");
             }}
-            className={`glass p-3.5 rounded-xl border text-left transition-all cursor-pointer hover:border-teal-400/50 ${
+            className={`glass p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               adminSection === "users" && filterRole === "all"
-                ? "border-teal-400 bg-teal-500/10"
-                : "border-white/10"
+                ? "border-cyan-400/60 bg-cyan-500/15 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                : "border-white/10 hover:border-cyan-400/40 bg-[#111827]/80"
             }`}
           >
-            <Users className="w-4 h-4 text-teal-400" />
-            <div className="text-[10px] text-slate-400 font-semibold uppercase mt-1">Total Users</div>
-            <div className="text-lg font-bold text-white font-mono">{stats.totalUsers}</div>
+            <Users className="w-4 h-4 text-cyan-400" />
+            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1.5">Total Users</div>
+            <div className="text-lg font-extrabold text-white font-mono">{stats.totalUsers}</div>
           </button>
 
           <button
@@ -204,15 +211,15 @@ export default function AdminDashboard() {
               setAdminSection("users");
               setFilterRole("student");
             }}
-            className={`glass p-3.5 rounded-xl border text-left transition-all cursor-pointer hover:border-emerald-400/50 ${
+            className={`glass p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               adminSection === "users" && filterRole === "student"
-                ? "border-emerald-400 bg-emerald-500/10"
-                : "border-white/10"
+                ? "border-cyan-400/60 bg-cyan-500/15 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                : "border-white/10 hover:border-cyan-400/40 bg-[#111827]/80"
             }`}
           >
-            <GraduationCap className="w-4 h-4 text-emerald-400" />
-            <div className="text-[10px] text-slate-400 font-semibold uppercase mt-1">Students</div>
-            <div className="text-lg font-bold text-white font-mono">{stats.studentsCount}</div>
+            <GraduationCap className="w-4 h-4 text-cyan-400" />
+            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1.5">Students</div>
+            <div className="text-lg font-extrabold text-white font-mono">{stats.studentsCount}</div>
           </button>
 
           <button
@@ -220,83 +227,83 @@ export default function AdminDashboard() {
               setAdminSection("users");
               setFilterRole("faculty");
             }}
-            className={`glass p-3.5 rounded-xl border text-left transition-all cursor-pointer hover:border-purple-400/50 ${
+            className={`glass p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               adminSection === "users" && filterRole === "faculty"
-                ? "border-purple-400 bg-purple-500/10"
-                : "border-white/10"
+                ? "border-violet-400/60 bg-violet-500/15 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                : "border-white/10 hover:border-violet-400/40 bg-[#111827]/80"
             }`}
           >
-            <UserCheck className="w-4 h-4 text-purple-400" />
-            <div className="text-[10px] text-slate-400 font-semibold uppercase mt-1">Faculty</div>
-            <div className="text-lg font-bold text-white font-mono">{stats.facultyCount}</div>
+            <UserCheck className="w-4 h-4 text-violet-400" />
+            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1.5">Faculty</div>
+            <div className="text-lg font-extrabold text-white font-mono">{stats.facultyCount}</div>
           </button>
 
           <button
             onClick={() => setAdminSection("faculty-approvals")}
-            className={`glass p-3.5 rounded-xl border text-left transition-all cursor-pointer hover:border-purple-400/50 ${
+            className={`glass p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               adminSection === "faculty-approvals"
-                ? "border-purple-400 bg-purple-500/20"
-                : "border-purple-500/30 bg-purple-500/10"
+                ? "border-violet-400/60 bg-violet-500/20 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                : "border-violet-500/30 bg-violet-500/10 hover:border-violet-400/40"
             }`}
           >
-            <Clock className="w-4 h-4 text-purple-300" />
-            <div className="text-[10px] text-purple-300 font-semibold uppercase mt-1">Pending Faculty</div>
-            <div className="text-lg font-bold text-purple-200 font-mono">{stats.pendingFacultyCount || 0}</div>
+            <Clock className="w-4 h-4 text-violet-300" />
+            <div className="text-[10px] text-violet-300 font-bold uppercase mt-1.5">Pending Faculty</div>
+            <div className="text-lg font-extrabold text-violet-200 font-mono">{stats.pendingFacultyCount || 0}</div>
           </button>
 
           <button
             onClick={() => setAdminSection("academic")}
-            className={`glass p-3.5 rounded-xl border text-left transition-all cursor-pointer hover:border-amber-400/50 ${
+            className={`glass p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               adminSection === "academic"
-                ? "border-amber-400 bg-amber-500/20"
-                : "border-amber-500/30 bg-amber-500/5"
+                ? "border-amber-400/60 bg-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+                : "border-amber-500/30 bg-amber-500/5 hover:border-amber-400/40"
             }`}
           >
             <Building2 className="w-4 h-4 text-amber-400" />
-            <div className="text-[10px] text-amber-300 font-semibold uppercase mt-1">Departments</div>
-            <div className="text-lg font-bold text-amber-300 font-mono">{stats.departmentCount || 0}</div>
+            <div className="text-[10px] text-amber-300 font-bold uppercase mt-1.5">Departments</div>
+            <div className="text-lg font-extrabold text-amber-300 font-mono">{stats.departmentCount || 0}</div>
           </button>
 
           <button
             onClick={() => setAdminSection("preapproved")}
-            className={`glass p-3.5 rounded-xl border text-left transition-all cursor-pointer hover:border-emerald-400/50 ${
+            className={`glass p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               adminSection === "preapproved"
-                ? "border-emerald-400 bg-emerald-500/20"
-                : "border-emerald-500/30 bg-emerald-500/5"
+                ? "border-cyan-400/60 bg-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                : "border-cyan-500/30 bg-cyan-500/5 hover:border-cyan-400/40"
             }`}
           >
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <div className="text-[10px] text-emerald-300 font-semibold uppercase mt-1">Pre-Approved List</div>
-            <div className="text-lg font-bold text-emerald-300 font-mono">{stats.preApprovedCount || 0}</div>
+            <ShieldCheck className="w-4 h-4 text-cyan-400" />
+            <div className="text-[10px] text-cyan-300 font-bold uppercase mt-1.5">Pre-Approved</div>
+            <div className="text-lg font-extrabold text-cyan-300 font-mono">{stats.preApprovedCount || 0}</div>
           </button>
 
-          <div className="glass p-3.5 rounded-xl border border-white/10 space-y-1">
-            <BookOpen className="w-4 h-4 text-indigo-400" />
-            <div className="text-[10px] text-slate-400 font-semibold uppercase">Assignments</div>
-            <div className="text-lg font-bold text-white font-mono">{stats.totalAssignments}</div>
+          <div className="glass p-4 rounded-2xl border border-white/10 bg-[#111827]/80">
+            <BookOpen className="w-4 h-4 text-slate-400" />
+            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1.5">Assignments</div>
+            <div className="text-lg font-extrabold text-white font-mono">{stats.totalAssignments}</div>
           </div>
         </div>
       )}
 
       {/* Main Mode Toggle Tabs */}
-      <div className="flex border-b border-white/10 overflow-x-auto space-x-6">
+      <div className="flex bg-[#090e1a] p-1.5 rounded-2xl border border-white/10 shadow-inner overflow-x-auto space-x-2">
         <button
           onClick={() => setAdminSection("users")}
-          className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 transition-colors border-b-2 whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
             adminSection === "users"
-              ? "border-amber-400 text-amber-400"
-              : "border-transparent text-slate-400 hover:text-white"
+              ? "neu-btn-primary shadow-md"
+              : "text-slate-400 hover:text-white"
           }`}
         >
-          <Users className="w-4 h-4" /> User Access Directory ({users.length})
+          <Users className="w-4 h-4" /> User Directory ({users.length})
         </button>
 
         <button
           onClick={() => setAdminSection("academic")}
-          className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 transition-colors border-b-2 whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
             adminSection === "academic"
-              ? "border-amber-400 text-amber-400"
-              : "border-transparent text-slate-400 hover:text-white"
+              ? "neu-btn-primary shadow-md"
+              : "text-slate-400 hover:text-white"
           }`}
         >
           <Building2 className="w-4 h-4" /> Academic Structure (Dept &rarr; Course &rarr; Labs)
@@ -304,15 +311,15 @@ export default function AdminDashboard() {
 
         <button
           onClick={() => setAdminSection("faculty-approvals")}
-          className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 transition-colors border-b-2 whitespace-nowrap relative ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
             adminSection === "faculty-approvals"
-              ? "border-purple-400 text-purple-400"
-              : "border-transparent text-slate-400 hover:text-white"
+              ? "neu-btn-primary shadow-md"
+              : "text-slate-400 hover:text-white"
           }`}
         >
           <UserCheck className="w-4 h-4" /> Pending Faculty Approvals
           {stats?.pendingFacultyCount > 0 && (
-            <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-white text-[10px] font-mono">
+            <span className="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-mono font-bold">
               {stats.pendingFacultyCount}
             </span>
           )}
@@ -320,10 +327,10 @@ export default function AdminDashboard() {
 
         <button
           onClick={() => setAdminSection("preapproved")}
-          className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 transition-colors border-b-2 whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
             adminSection === "preapproved"
-              ? "border-emerald-400 text-emerald-400"
-              : "border-transparent text-slate-400 hover:text-white"
+              ? "neu-btn-primary shadow-md"
+              : "text-slate-400 hover:text-white"
           }`}
         >
           <ShieldCheck className="w-4 h-4" /> Pre-Approved Registration List
@@ -332,33 +339,33 @@ export default function AdminDashboard() {
 
       {/* TAB 1: USER DIRECTORY & ACCESS CONTROL */}
       {adminSection === "users" && (
-        <div className="glass rounded-2xl border border-white/10 overflow-hidden space-y-4">
+        <div className="glass-panel rounded-3xl border border-white/10 overflow-hidden space-y-4 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
           {/* Controls Bar: Search & Department / Role Filter */}
-          <div className="p-4 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h2 className="text-sm font-bold text-white flex items-center gap-2">
-              <Shield className="w-4 h-4 text-amber-400" /> Registered Accounts Directory ({filteredUsers.length})
+          <div className="p-5 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h2 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <Shield className="w-4 h-4 text-cyan-400" /> Registered Accounts ({filteredUsers.length})
             </h2>
 
             <div className="flex flex-wrap items-center gap-3 text-xs">
               {/* Search input */}
               <div className="relative w-full sm:w-64">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-3" />
                 <input
                   type="text"
                   placeholder="Search user, ID, Dept or Course..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg pl-8 pr-3 py-1.5 focus:outline-none"
+                  className="w-full bg-[#090e1a] border border-white/10 text-white rounded-xl pl-9 pr-3.5 py-2 text-xs focus:outline-none focus:border-cyan-500/50 shadow-inner"
                 />
               </div>
 
               {/* Department filter */}
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-400">Dept:</span>
+                <span className="text-slate-400 font-semibold">Dept:</span>
                 <select
                   value={filterDept}
                   onChange={(e) => setFilterDept(e.target.value)}
-                  className="bg-slate-900 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 focus:outline-none"
+                  className="bg-[#090e1a] border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none cursor-pointer"
                 >
                   <option value="all">All Depts</option>
                   {departments.map((d) => (
@@ -371,11 +378,11 @@ export default function AdminDashboard() {
 
               {/* Role filter */}
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-400">Role:</span>
+                <span className="text-slate-400 font-semibold">Role:</span>
                 <select
                   value={filterRole}
                   onChange={(e) => setFilterRole(e.target.value)}
-                  className="bg-slate-900 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 focus:outline-none capitalize"
+                  className="bg-[#090e1a] border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none capitalize cursor-pointer"
                 >
                   <option value="all">All Roles</option>
                   <option value="student">Students</option>
@@ -388,13 +395,13 @@ export default function AdminDashboard() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-900/80 text-slate-400 uppercase font-mono border-b border-white/10">
+              <thead className="bg-[#090e1a] text-slate-400 uppercase font-mono border-b border-white/10">
                 <tr>
                   <th className="p-4">User & Official ID</th>
                   <th className="p-4">Role</th>
-                  <th className="p-4">Status & Approval</th>
-                  <th className="p-4">Department & Course / Program</th>
-                  <th className="p-4">Assigned Teaching Labs</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Department & Course</th>
+                  <th className="p-4">Assigned Labs</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -414,10 +421,10 @@ export default function AdminDashboard() {
                       <tr key={u._id} className="hover:bg-white/5 transition-colors">
                         {/* User & Official ID */}
                         <td className="p-4">
-                          <div className="font-semibold text-white text-sm">{u.name}</div>
+                          <div className="font-bold text-white text-sm">{u.name}</div>
                           <div className="text-[11px] text-slate-400">{u.email}</div>
                           {(u.studentId || u.employeeId || u.rollNo) && (
-                            <div className="text-[10px] text-amber-300 font-mono mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+                            <div className="text-[10px] text-cyan-300 font-mono mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
                               ID: {u.studentId || u.employeeId || u.rollNo}
                             </div>
                           )}
@@ -428,7 +435,7 @@ export default function AdminDashboard() {
                           <select
                             value={u.role}
                             onChange={(e) => handleRoleChange(u._id, e.target.value)}
-                            className="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold capitalize focus:outline-none cursor-pointer"
+                            className="bg-[#090e1a] border border-white/10 text-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold capitalize focus:outline-none cursor-pointer"
                           >
                             <option value="student">Student</option>
                             <option value="faculty">Faculty</option>
@@ -439,12 +446,12 @@ export default function AdminDashboard() {
                         {/* Status */}
                         <td className="p-4">
                           <span
-                            className={`px-2.5 py-1 rounded-full font-semibold inline-flex items-center gap-1 ${
+                            className={`px-2.5 py-1 rounded-full font-bold inline-flex items-center gap-1 text-[11px] ${
                               u.status === "active"
-                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                                 : u.status === "pending"
-                                ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                                : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                                ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                                : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
                             }`}
                           >
                             {u.status === "active" ? (
@@ -461,19 +468,19 @@ export default function AdminDashboard() {
                         {/* Department & Course */}
                         <td className="p-4 text-slate-300">
                           <div className="flex items-center gap-1.5">
-                            <Building2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                            <span className="font-semibold text-white">
-                              {deptObj?.name || (typeof u.department === "string" ? u.department : "General / System Admin")}
+                            <Building2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                            <span className="font-bold text-white">
+                              {deptObj?.name || (typeof u.department === "string" ? u.department : "General")}
                             </span>
                             {deptObj?.code && (
-                              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-amber-300 font-mono text-[10px] border border-amber-500/20">
+                              <span className="px-1.5 py-0.5 rounded-md bg-[#090e1a] text-cyan-300 font-mono text-[10px] border border-cyan-500/20">
                                 {deptObj.code}
                               </span>
                             )}
                           </div>
 
                           {courseObj && (
-                            <div className="mt-1 flex items-center gap-1.5 text-[11px] text-teal-300">
+                            <div className="mt-1 flex items-center gap-1.5 text-[11px] text-violet-300 font-medium">
                               <BookOpen className="w-3 h-3 shrink-0" />
                               <span>{courseObj.name}</span>
                               <span className="font-mono text-[10px] text-slate-400">({courseObj.code})</span>
@@ -496,7 +503,7 @@ export default function AdminDashboard() {
                                 u.teachingLabs.map((lab) => (
                                   <span
                                     key={lab._id || lab}
-                                    className="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] font-mono border border-purple-500/30"
+                                    className="px-2 py-0.5 rounded-lg bg-violet-500/15 text-violet-300 text-[10px] font-mono border border-violet-500/30 font-bold"
                                   >
                                     {lab.name || lab.code}
                                   </span>
@@ -515,7 +522,7 @@ export default function AdminDashboard() {
                           {u.role === "faculty" && (
                             <button
                               onClick={() => openFacultyLabsModal(u)}
-                              className="px-2.5 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 text-xs font-semibold inline-flex items-center gap-1 cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-violet-500/15 hover:bg-violet-500/25 text-violet-300 border border-violet-500/30 text-xs font-bold inline-flex items-center gap-1 cursor-pointer transition-colors"
                             >
                               <Edit2 className="w-3 h-3" /> Manage Labs
                             </button>
@@ -523,10 +530,10 @@ export default function AdminDashboard() {
                           {u.role !== "admin" && (
                             <button
                               onClick={() => handleStatusToggle(u._id, u.status)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                                 u.status === "blocked"
-                                  ? "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30"
-                                  : "bg-rose-500/20 text-rose-300 hover:bg-rose-500/30"
+                                  ? "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/30"
+                                  : "bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/30"
                               }`}
                             >
                               {u.status === "blocked" ? "Unblock" : "Block"}
@@ -554,29 +561,29 @@ export default function AdminDashboard() {
 
       {/* FACULTY LAB EDIT MODAL */}
       {editingFaculty && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="glass p-6 rounded-2xl border border-purple-500/30 bg-slate-950 w-full max-w-xl space-y-4 animate-fade-up">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-violet-500/30 bg-[#0c1020] w-full max-w-xl space-y-4 shadow-2xl animate-fade-up">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-purple-400" /> Assign Lab Subjects for {editingFaculty.name}
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-violet-400" /> Assign Lab Subjects for {editingFaculty.name}
               </h3>
               <button
                 onClick={() => setEditingFaculty(null)}
-                className="text-slate-400 hover:text-white cursor-pointer"
+                className="text-slate-400 hover:text-white cursor-pointer font-bold"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             <p className="text-xs text-slate-300">
               Department:{" "}
-              <strong className="text-purple-300">
+              <strong className="text-violet-300 font-bold">
                 {editingFaculty.department?.name || "General"}
               </strong>{" "}
               &bull; Select programming labs taught by this faculty member:
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto pr-1">
               {allLabs.map((lab) => {
                 const isSelected = selectedLabsForEdit.includes(lab._id);
                 return (
@@ -590,17 +597,17 @@ export default function AdminDashboard() {
                           : [...prev, lab._id]
                       );
                     }}
-                    className={`p-2.5 rounded-xl text-left text-xs border transition-all flex items-center justify-between cursor-pointer ${
+                    className={`p-3 rounded-2xl text-left text-xs border transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? "bg-purple-500/30 border-purple-500 text-purple-200 font-bold"
-                        : "bg-slate-900 border-white/5 text-slate-400 hover:border-white/20"
+                        ? "bg-violet-500/25 border-violet-400 text-white font-bold shadow-[0_0_12px_rgba(139,92,246,0.3)]"
+                        : "bg-[#090e1a] border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-200"
                     }`}
                   >
                     <div>
-                      <div>{lab.name}</div>
-                      <div className="text-[10px] text-slate-400 font-mono">{lab.code}</div>
+                      <div className="font-bold">{lab.name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">{lab.code}</div>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] font-mono uppercase font-bold">
+                    <span className="px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 text-[10px] font-mono uppercase font-bold border border-violet-500/30">
                       {lab.requiredLanguage}
                     </span>
                   </button>
@@ -608,17 +615,17 @@ export default function AdminDashboard() {
               })}
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-white/10">
+            <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
               <button
                 onClick={() => setEditingFaculty(null)}
-                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl text-slate-400 hover:text-white text-xs font-bold cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveFacultyLabs}
                 disabled={updatingLabs}
-                className="px-4 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-bold text-xs shadow-lg cursor-pointer disabled:opacity-50"
+                className="px-5 py-2.5 rounded-xl neu-btn-primary text-white font-bold text-xs shadow-lg cursor-pointer disabled:opacity-50"
               >
                 {updatingLabs ? "Saving..." : "Save Lab Assignments"}
               </button>

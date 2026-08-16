@@ -69,15 +69,18 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-base-900 text-teal-400">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
+      <div className="flex items-center justify-center min-h-screen bg-[#070b14]">
+        <div className="relative">
+          <div className="w-14 h-14 rounded-full border-2 border-violet-500/20 border-t-violet-400 animate-spin"></div>
+          <div className="w-9 h-9 rounded-full border-2 border-cyan-500/20 border-t-cyan-400 animate-spin absolute top-2.5 left-2.5"></div>
+        </div>
       </div>
     );
   }
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-base-900 text-slate-100 relative">
+      <div className="min-h-screen flex flex-col bg-[#070b14] text-slate-100 relative">
         <div className="grain"></div>
 
         {user && <Navbar user={user} onLogout={handleLogout} />}

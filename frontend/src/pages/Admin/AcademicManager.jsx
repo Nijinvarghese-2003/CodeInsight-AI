@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../../services/api";
-import { Building2, BookOpen, Code2, Plus, Trash2, Layers, CheckCircle, Lock } from "lucide-react";
+import { Building2, BookOpen, Code2, Plus, Trash2, Layers, CheckCircle, Lock, Sparkles } from "lucide-react";
 
 export default function AcademicManager() {
   const [activeTab, setActiveTab] = useState("depts"); // 'depts' | 'courses' | 'labs' | 'hierarchy'
@@ -124,7 +124,9 @@ export default function AcademicManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-amber-400"></div>
+        <div className="relative">
+          <div className="w-10 h-10 rounded-full border-2 border-amber-500/20 border-t-amber-400 animate-spin"></div>
+        </div>
       </div>
     );
   }
@@ -135,57 +137,58 @@ export default function AcademicManager() {
       <div className="flex flex-wrap gap-2 border-b border-white/10 pb-3">
         <button
           onClick={() => setActiveTab("depts")}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
             activeTab === "depts"
-              ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
               : "text-slate-400 hover:text-white"
           }`}
         >
-          <Building2 className="w-3.5 h-3.5" /> 1. Departments ({departments.length})
+          <Building2 className="w-3.5 h-3.5 text-amber-400" /> 1. Departments ({departments.length})
         </button>
 
         <button
           onClick={() => setActiveTab("courses")}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
             activeTab === "courses"
-              ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.2)]"
               : "text-slate-400 hover:text-white"
           }`}
         >
-          <BookOpen className="w-3.5 h-3.5" /> 2. Courses / Programs ({courses.length})
+          <BookOpen className="w-3.5 h-3.5 text-cyan-400" /> 2. Courses ({courses.length})
         </button>
 
         <button
           onClick={() => setActiveTab("labs")}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
             activeTab === "labs"
-              ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              ? "bg-violet-500/20 text-violet-300 border border-violet-500/30 shadow-[0_0_12px_rgba(139,92,246,0.2)]"
               : "text-slate-400 hover:text-white"
           }`}
         >
-          <Code2 className="w-3.5 h-3.5" /> 3. Programming Labs ({labs.length})
+          <Code2 className="w-3.5 h-3.5 text-violet-400" /> 3. Labs ({labs.length})
         </button>
 
         <button
           onClick={() => setActiveTab("hierarchy")}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
             activeTab === "hierarchy"
-              ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+              ? "bg-gradient-to-r from-violet-600/30 to-cyan-600/30 text-white border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.2)]"
               : "text-slate-400 hover:text-white"
           }`}
         >
-          <Layers className="w-3.5 h-3.5" /> Full Academic Tree View
+          <Layers className="w-3.5 h-3.5 text-cyan-400" /> Full Tree View
         </button>
       </div>
 
       {/* Messages */}
       {successMsg && (
-        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-          <CheckCircle className="w-4 h-4" /> {successMsg}
+        <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2 font-bold shadow-sm">
+          <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{successMsg}</span>
         </div>
       )}
       {errorMsg && (
-        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+        <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold shadow-sm">
           {errorMsg}
         </div>
       )}
@@ -193,65 +196,65 @@ export default function AcademicManager() {
       {/* TAB 1: DEPARTMENTS */}
       {activeTab === "depts" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <form onSubmit={handleCreateDepartment} className="lg:col-span-5 glass p-5 rounded-2xl border border-white/10 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+          <form onSubmit={handleCreateDepartment} className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-white/10 space-y-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
               <Plus className="w-4 h-4 text-amber-400" /> Add New Department
             </h3>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Department Name *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Department Name *</label>
               <input
                 type="text"
                 value={deptForm.name}
                 onChange={(e) => setDeptForm({ ...deptForm, name: e.target.value })}
                 placeholder="e.g. Computer Science & Engineering"
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Department Code *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Department Code *</label>
               <input
                 type="text"
                 value={deptForm.code}
                 onChange={(e) => setDeptForm({ ...deptForm, code: e.target.value })}
                 placeholder="e.g. CSE"
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs font-mono uppercase focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono uppercase focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Description (Optional)</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Description (Optional)</label>
               <textarea
                 value={deptForm.description}
                 onChange={(e) => setDeptForm({ ...deptForm, description: e.target.value })}
                 placeholder="e.g. School of Computing & AI"
                 rows={2}
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none resize-none"
               />
             </div>
 
-            <button type="submit" className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs">
+            <button type="submit" className="w-full py-3 rounded-xl neu-btn-primary font-bold text-xs shadow-md cursor-pointer">
               + Save Department
             </button>
           </form>
 
-          <div className="lg:col-span-7 glass rounded-2xl border border-white/10 overflow-hidden">
-            <div className="p-4 border-b border-white/10 font-bold text-xs text-white flex items-center justify-between">
+          <div className="lg:col-span-7 glass-panel rounded-3xl border border-white/10 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <div className="p-4 bg-[#090e1a] border-b border-white/10 font-bold text-xs text-white flex items-center justify-between">
               <span>Existing Departments</span>
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold border border-amber-500/30">
                 {departments.length} Total
               </span>
             </div>
 
             {departments.length === 0 ? (
-              <div className="p-8 text-center space-y-2">
+              <div className="p-12 text-center space-y-2">
                 <Building2 className="w-8 h-8 text-slate-500 mx-auto" />
-                <p className="text-sm font-semibold text-slate-300">No Departments Found</p>
-                <p className="text-xs text-slate-500">
-                  Use the form on the left to add your institution's academic departments.
+                <p className="text-xs font-bold text-slate-300">No Departments Found</p>
+                <p className="text-[11px] text-slate-400">
+                  Use the form to add your institution's academic departments.
                 </p>
               </div>
             ) : (
@@ -261,7 +264,7 @@ export default function AcademicManager() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-white text-sm">{d.name}</span>
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-amber-300 font-mono text-[10px] font-semibold border border-amber-500/20">
+                        <span className="px-2 py-0.5 rounded-md bg-[#090e1a] text-amber-300 font-mono text-[10px] font-bold border border-amber-500/20">
                           {d.code}
                         </span>
                       </div>
@@ -271,7 +274,7 @@ export default function AcademicManager() {
                     </div>
                     <button
                       onClick={() => handleDeleteDepartment(d._id)}
-                      className="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors shrink-0"
+                      className="text-slate-400 hover:text-rose-400 p-2 rounded-xl hover:bg-rose-500/10 transition-colors shrink-0 cursor-pointer"
                       title="Delete Department"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -287,18 +290,18 @@ export default function AcademicManager() {
       {/* TAB 2: COURSES */}
       {activeTab === "courses" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <form onSubmit={handleCreateCourse} className="lg:col-span-5 glass p-5 rounded-2xl border border-white/10 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-              <Plus className="w-4 h-4 text-amber-400" /> Add Course / Program
+          <form onSubmit={handleCreateCourse} className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-white/10 space-y-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <Plus className="w-4 h-4 text-cyan-400" /> Add Course / Program
             </h3>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Select Department *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Select Department *</label>
               <select
                 value={courseForm.departmentId}
                 onChange={(e) => setCourseForm({ ...courseForm, departmentId: e.target.value })}
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs bg-slate-900 focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs bg-[#090e1a] focus:outline-none cursor-pointer"
               >
                 <option value="">-- Choose Department --</option>
                 {departments.map((d) => (
@@ -308,45 +311,45 @@ export default function AcademicManager() {
             </div>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Course / Program Name *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Course / Program Name *</label>
               <input
                 type="text"
                 value={courseForm.name}
                 onChange={(e) => setCourseForm({ ...courseForm, name: e.target.value })}
                 placeholder="e.g. B.Tech Computer Science"
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Course Code *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Course Code *</label>
               <input
                 type="text"
                 value={courseForm.code}
                 onChange={(e) => setCourseForm({ ...courseForm, code: e.target.value })}
                 placeholder="e.g. BTECH-CSE"
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs font-mono uppercase focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono uppercase focus:outline-none"
               />
             </div>
 
-            <button type="submit" className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs">
+            <button type="submit" className="w-full py-3 rounded-xl neu-btn-primary font-bold text-xs shadow-md cursor-pointer">
               + Save Course / Program
             </button>
           </form>
 
-          <div className="lg:col-span-7 glass rounded-2xl border border-white/10 overflow-hidden">
-            <div className="p-4 border-b border-white/10 font-bold text-xs text-white">Existing Courses</div>
+          <div className="lg:col-span-7 glass-panel rounded-3xl border border-white/10 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <div className="p-4 bg-[#090e1a] border-b border-white/10 font-bold text-xs text-white">Existing Courses</div>
             <div className="divide-y divide-white/5">
               {courses.map((c) => (
                 <div key={c._id} className="p-4 flex items-center justify-between hover:bg-white/5 text-xs">
                   <div>
-                    <span className="font-bold text-white">{c.name}</span>
-                    <span className="ml-2 px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">{c.code}</span>
+                    <span className="font-bold text-white text-sm">{c.name}</span>
+                    <span className="ml-2 px-2 py-0.5 rounded-md bg-[#090e1a] text-cyan-300 font-mono text-[10px] border border-cyan-500/20">{c.code}</span>
                     <div className="text-[11px] text-slate-400 mt-0.5">Department: {c.department?.name || "N/A"}</div>
                   </div>
-                  <button onClick={() => handleDeleteCourse(c._id)} className="text-slate-400 hover:text-rose-400 p-1">
+                  <button onClick={() => handleDeleteCourse(c._id)} className="text-slate-400 hover:text-rose-400 p-2 rounded-xl hover:bg-rose-500/10 cursor-pointer">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -359,18 +362,18 @@ export default function AcademicManager() {
       {/* TAB 3: PROGRAMMING LABS */}
       {activeTab === "labs" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <form onSubmit={handleCreateLabSubject} className="lg:col-span-5 glass p-5 rounded-2xl border border-white/10 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-              <Plus className="w-4 h-4 text-amber-400" /> Add Programming Lab Subject
+          <form onSubmit={handleCreateLabSubject} className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-white/10 space-y-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <Plus className="w-4 h-4 text-violet-400" /> Add Programming Lab Subject
             </h3>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Select Course / Program *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Select Course / Program *</label>
               <select
                 value={labForm.courseId}
                 onChange={(e) => setLabForm({ ...labForm, courseId: e.target.value })}
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs bg-slate-900 focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs bg-[#090e1a] focus:outline-none cursor-pointer"
               >
                 <option value="">-- Choose Course --</option>
                 {courses.map((c) => (
@@ -380,37 +383,37 @@ export default function AcademicManager() {
             </div>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Lab Subject Name *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Lab Subject Name *</label>
               <input
                 type="text"
                 value={labForm.name}
                 onChange={(e) => setLabForm({ ...labForm, name: e.target.value })}
                 placeholder="e.g. C Programming Lab"
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1">Lab Code *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Lab Code *</label>
               <input
                 type="text"
                 value={labForm.code}
                 onChange={(e) => setLabForm({ ...labForm, code: e.target.value })}
                 placeholder="e.g. CS101"
                 required
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs font-mono uppercase focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono uppercase focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs text-slate-300 mb-1 flex items-center gap-1">
-                <Lock className="w-3 h-3 text-amber-400" /> Locked Programming Language *
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-violet-400" /> Locked Programming Language *
               </label>
               <select
                 value={labForm.requiredLanguage}
                 onChange={(e) => setLabForm({ ...labForm, requiredLanguage: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl neu-input text-white text-xs bg-slate-900 font-mono uppercase focus:outline-none"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs bg-[#090e1a] font-mono uppercase focus:outline-none cursor-pointer"
               >
                 <option value="c">C</option>
                 <option value="cpp">C++</option>
@@ -420,27 +423,27 @@ export default function AcademicManager() {
               </select>
             </div>
 
-            <button type="submit" className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs">
+            <button type="submit" className="w-full py-3 rounded-xl neu-btn-primary font-bold text-xs shadow-md cursor-pointer">
               + Save Programming Lab
             </button>
           </form>
 
-          <div className="lg:col-span-7 glass rounded-2xl border border-white/10 overflow-hidden">
-            <div className="p-4 border-b border-white/10 font-bold text-xs text-white">Existing Programming Labs</div>
+          <div className="lg:col-span-7 glass-panel rounded-3xl border border-white/10 overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <div className="p-4 bg-[#090e1a] border-b border-white/10 font-bold text-xs text-white">Existing Programming Labs</div>
             <div className="divide-y divide-white/5">
               {labs.map((l) => (
                 <div key={l._id} className="p-4 flex items-center justify-between hover:bg-white/5 text-xs">
                   <div>
-                    <span className="font-bold text-white">{l.name}</span>
-                    <span className="ml-2 px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">{l.code}</span>
-                    <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono text-[10px] uppercase font-bold">
+                    <span className="font-bold text-white text-sm">{l.name}</span>
+                    <span className="ml-2 px-2 py-0.5 rounded-md bg-[#090e1a] text-slate-300 font-mono text-[10px] border border-white/10">{l.code}</span>
+                    <span className="ml-2 px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/30 font-mono text-[10px] uppercase font-bold">
                       {l.requiredLanguage}
                     </span>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
+                    <div className="text-[11px] text-slate-400 mt-1">
                       Course: {l.course?.name || "N/A"} &bull; Dept: {l.department?.name || "N/A"}
                     </div>
                   </div>
-                  <button onClick={() => handleDeleteLabSubject(l._id)} className="text-slate-400 hover:text-rose-400 p-1">
+                  <button onClick={() => handleDeleteLabSubject(l._id)} className="text-slate-400 hover:text-rose-400 p-2 rounded-xl hover:bg-rose-500/10 cursor-pointer">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -454,16 +457,16 @@ export default function AcademicManager() {
       {activeTab === "hierarchy" && (
         <div className="space-y-4">
           {hierarchy.length === 0 ? (
-            <div className="glass p-8 text-center text-slate-400 text-xs">
+            <div className="glass-panel p-12 text-center text-slate-400 text-xs rounded-3xl border border-white/10">
               No academic hierarchy nodes defined yet. Start by adding Departments, Courses, and Labs.
             </div>
           ) : (
             hierarchy.map((dept) => (
-              <div key={dept._id} className="glass p-5 rounded-2xl border border-white/10 space-y-3">
+              <div key={dept._id} className="glass-panel p-6 rounded-3xl border border-white/10 space-y-3.5 shadow-md">
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-amber-400" />
+                  <Building2 className="w-4 h-4 text-cyan-400" />
                   <h3 className="text-sm font-bold text-white">{dept.name}</h3>
-                  <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-xs font-semibold">{dept.code}</span>
+                  <span className="px-2.5 py-0.5 rounded-md bg-[#090e1a] text-cyan-300 font-mono text-xs font-bold border border-cyan-500/20">{dept.code}</span>
                 </div>
 
                 <div className="pl-6 space-y-3 border-l-2 border-white/10 ml-2">
@@ -471,25 +474,25 @@ export default function AcademicManager() {
                     <p className="text-xs text-slate-500 italic">No courses in this department.</p>
                   ) : (
                     dept.courses.map((course) => (
-                      <div key={course._id} className="bg-slate-900/60 p-3.5 rounded-xl border border-white/5 space-y-2">
+                      <div key={course._id} className="bg-[#090e1a] p-4 rounded-2xl border border-white/5 space-y-2.5 shadow-inner">
                         <div className="flex items-center gap-2">
-                          <BookOpen className="w-3.5 h-3.5 text-teal-400" />
-                          <span className="text-xs font-semibold text-slate-200">{course.name}</span>
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono text-[10px]">{course.code}</span>
+                          <BookOpen className="w-3.5 h-3.5 text-violet-400" />
+                          <span className="text-xs font-bold text-slate-200">{course.name}</span>
+                          <span className="px-2 py-0.5 rounded-md bg-[#050811] text-slate-400 font-mono text-[10px]">{course.code}</span>
                         </div>
 
-                        <div className="pl-5 space-y-1.5">
+                        <div className="pl-5 space-y-2">
                           {course.labs?.length === 0 ? (
                             <p className="text-[11px] text-slate-500 italic">No programming labs configured for this course.</p>
                           ) : (
                             course.labs.map((lab) => (
-                              <div key={lab._id} className="text-xs flex items-center justify-between text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-white/5">
+                              <div key={lab._id} className="text-xs flex items-center justify-between text-slate-300 bg-[#050811] px-3.5 py-2 rounded-xl border border-white/5">
                                 <span className="flex items-center gap-2">
-                                  <Code2 className="w-3.5 h-3.5 text-indigo-400" />
-                                  <span className="font-medium text-white">{lab.name}</span>
+                                  <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                                  <span className="font-bold text-white">{lab.name}</span>
                                   <span className="font-mono text-[10px] text-slate-400">({lab.code})</span>
                                 </span>
-                                <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[10px] font-bold uppercase border border-amber-500/20">
+                                <span className="px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 font-mono text-[10px] font-bold uppercase border border-violet-500/30">
                                   Locked: {lab.requiredLanguage}
                                 </span>
                               </div>
