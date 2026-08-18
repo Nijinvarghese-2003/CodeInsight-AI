@@ -55,7 +55,7 @@ export const submitSolution = async (req, res) => {
       submittedLanguage
     );
 
-    // 4. Determine if submission is Late (past assignment deadline)
+    // Determine if submission is Late (past assignment deadline)
     let isLate = false;
     if (assignment.deadline) {
       const deadlineDate = new Date(assignment.deadline);
@@ -64,27 +64,49 @@ export const submitSolution = async (req, res) => {
       }
     }
 
-    // Create Submission document
-    const submission = await Submission.create({
+    // Check if an existing submission exists for this student and assignment
+    let submission = await Submission.findOne({
       assignment: assignmentId,
       student: req.user._id,
-      submittedLanguage: submittedLanguage.toLowerCase(),
-      code,
-      status: judge0Results.status,
-      score: judge0Results.score,
-      passedCount: judge0Results.passedCount,
-      totalCount: judge0Results.totalCount,
-      testCaseResults: judge0Results.testCaseResults,
-      aiAnalysis: aiAnalysisResults,
-      plagiarism: plagiarismResults,
-      isLate,
     });
+
+    if (submission) {
+      // Update existing submission in place
+      submission.submittedLanguage = submittedLanguage.toLowerCase();
+      submission.code = code;
+      submission.status = judge0Results.status;
+      submission.score = judge0Results.score;
+      submission.passedCount = judge0Results.passedCount;
+      submission.totalCount = judge0Results.totalCount;
+      submission.testCaseResults = judge0Results.testCaseResults;
+      submission.aiAnalysis = aiAnalysisResults;
+      submission.plagiarism = plagiarismResults;
+      submission.isLate = isLate;
+
+      await submission.save();
+    } else {
+      // Create new submission document
+      submission = await Submission.create({
+        assignment: assignmentId,
+        student: req.user._id,
+        submittedLanguage: submittedLanguage.toLowerCase(),
+        code,
+        status: judge0Results.status,
+        score: judge0Results.score,
+        passedCount: judge0Results.passedCount,
+        totalCount: judge0Results.totalCount,
+        testCaseResults: judge0Results.testCaseResults,
+        aiAnalysis: aiAnalysisResults,
+        plagiarism: plagiarismResults,
+        isLate,
+      });
+    }
 
     const populatedSubmission = await Submission.findById(submission._id)
       .populate("student", "name rollNo email")
       .populate("assignment", "title courseCode courseName requiredLanguage maxPoints deadline");
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Solution submitted and analyzed successfully",
       submission: populatedSubmission,
@@ -105,12 +127,22 @@ export const getMySubmissions = async (req, res) => {
   try {
     const submissions = await Submission.find({ student: req.user._id })
       .populate("assignment", "title courseCode courseName requiredLanguage maxPoints deadline")
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1, createdAt: -1 });
+
+    // Deduplicate by assignment (keeping the latest submission per assignment)
+    const latestByAssignment = new Map();
+    for (const sub of submissions) {
+      const assId = sub.assignment?._id?.toString() || sub.assignment?.toString();
+      if (assId && !latestByAssignment.has(assId)) {
+        latestByAssignment.set(assId, sub);
+      }
+    }
+    const uniqueSubmissions = Array.from(latestByAssignment.values());
 
     res.status(200).json({
       success: true,
-      count: submissions.length,
-      submissions,
+      count: uniqueSubmissions.length,
+      submissions: uniqueSubmissions,
     });
   } catch (error) {
     res.status(500).json({
@@ -130,12 +162,22 @@ export const getAssignmentSubmissions = async (req, res) => {
     })
       .populate("student", "name rollNo studentId email department")
       .populate("assignment", "title courseCode courseName requiredLanguage maxPoints deadline")
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1, createdAt: -1 });
+
+    // Deduplicate by student (keeping the latest submission per student)
+    const latestByStudent = new Map();
+    for (const sub of submissions) {
+      const studentId = sub.student?._id?.toString() || sub.student?.toString();
+      if (studentId && !latestByStudent.has(studentId)) {
+        latestByStudent.set(studentId, sub);
+      }
+    }
+    const uniqueSubmissions = Array.from(latestByStudent.values());
 
     res.status(200).json({
       success: true,
-      count: submissions.length,
-      submissions,
+      count: uniqueSubmissions.length,
+      submissions: uniqueSubmissions,
     });
   } catch (error) {
     res.status(500).json({

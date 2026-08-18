@@ -110,9 +110,9 @@ export default function StudentSubmissions() {
                     </div>
                     <p className="text-xs text-slate-400 mt-1.5 flex flex-wrap items-center gap-2">
                       <span>
-                        Language: <span className="font-mono text-cyan-400 uppercase font-bold">{sub.submittedLanguage}</span> &bull; Submitted: {new Date(sub.createdAt).toLocaleString()}
+                        Language: <span className="font-mono text-cyan-400 uppercase font-bold">{sub.submittedLanguage}</span> &bull; Submitted: {new Date(sub.updatedAt || sub.createdAt).toLocaleString()}
                       </span>
-                      {(sub.isLate || (sub.assignment?.deadline && new Date(sub.createdAt) > new Date(sub.assignment.deadline))) && (
+                      {(sub.isLate || (sub.assignment?.deadline && new Date(sub.updatedAt || sub.createdAt) > new Date(sub.assignment.deadline))) && (
                         <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[10px] font-bold flex items-center gap-1">
                           <Clock className="w-3 h-3 text-rose-400" /> Late Submission
                         </span>

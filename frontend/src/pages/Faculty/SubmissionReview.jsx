@@ -75,8 +75,9 @@ export default function SubmissionReview() {
   const isSubmissionLate = (sub) => {
     if (sub.isLate) return true;
     const deadline = assignment?.deadline || sub.assignment?.deadline;
-    if (deadline && sub.createdAt) {
-      return new Date(sub.createdAt) > new Date(deadline);
+    const submissionDate = sub.updatedAt || sub.createdAt;
+    if (deadline && submissionDate) {
+      return new Date(submissionDate) > new Date(deadline);
     }
     return false;
   };
@@ -246,7 +247,7 @@ export default function SubmissionReview() {
                 Detailed Submission Inspector: {selectedSubmission.student?.name}
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Submitted in <strong className="font-mono text-violet-400 uppercase">{selectedSubmission.submittedLanguage}</strong> on {new Date(selectedSubmission.createdAt).toLocaleString()}
+                Submitted in <strong className="font-mono text-violet-400 uppercase">{selectedSubmission.submittedLanguage}</strong> on {new Date(selectedSubmission.updatedAt || selectedSubmission.createdAt).toLocaleString()}
               </p>
             </div>
             <button
