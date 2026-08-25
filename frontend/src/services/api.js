@@ -19,6 +19,24 @@ export const api = {
     return res.json();
   },
 
+  sendRegistrationOtp: async (userData) => {
+    const res = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+    return res.json();
+  },
+
+  resendRegistrationOtp: async (email) => {
+    const res = await fetch(`${API_BASE_URL}/auth/resend-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    return res.json();
+  },
+
   signup: async (userData) => {
     const res = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",

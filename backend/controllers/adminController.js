@@ -161,6 +161,90 @@ export const toggleUserStatus = async (req, res) => {
   }
 };
 
+// @desc    Delete user and cascade delete all associated data (submissions, assignments, reset pre-approval)
+// @route   DELETE /api/admin/users/:id
+// @access  Private/Admin
+export const deleteUserCascade = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Protect against self-deletion by logged-in admin
+    if (req.user && req.user._id && req.user._id.toString() === user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own admin account",
+      });
+    }
+
+    let deletedSubmissionsCount = 0;
+    let deletedAssignmentsCount = 0;
+
+    // 1. Delete student submissions created by this user
+    const studentSubmissionsResult = await Submission.deleteMany({ student: user._id });
+    deletedSubmissionsCount += studentSubmissionsResult.deletedCount || 0;
+
+    // 2. If faculty, cascade delete their created assignments and submissions on those assignments
+    if (user.role === "faculty") {
+      const facultyAssignments = await Assignment.find({ createdBy: user._id }).select("_id");
+      const assignmentIds = facultyAssignments.map((a) => a._id);
+
+      if (assignmentIds.length > 0) {
+        const assignmentSubmissionsResult = await Submission.deleteMany({
+          assignment: { $in: assignmentIds },
+        });
+        deletedSubmissionsCount += assignmentSubmissionsResult.deletedCount || 0;
+
+        const assignmentsResult = await Assignment.deleteMany({ createdBy: user._id });
+        deletedAssignmentsCount += assignmentsResult.deletedCount || 0;
+      }
+    }
+
+    // 3. Reset pre-approved status if user was pre-approved
+    if (user.email) {
+      const officialId = (user.studentId || user.rollNo || user.employeeId || "").trim().toUpperCase();
+      const preApprovedQuery = {
+        email: user.email.toLowerCase().trim(),
+        role: user.role,
+      };
+      if (officialId) {
+        preApprovedQuery.officialId = officialId;
+      }
+
+      await PreApprovedUser.updateMany(preApprovedQuery, { isRegistered: false });
+    }
+
+    // 4. Delete the user from database
+    await User.findByIdAndDelete(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: `User ${user.name} (${user.role}) and all corresponding data (${deletedSubmissionsCount} submissions, ${deletedAssignmentsCount} assignments) deleted successfully.`,
+      deletedUser: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      deletedSubmissionsCount,
+      deletedAssignmentsCount,
+    });
+  } catch (error) {
+    console.error("Delete user error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to delete user and corresponding data",
+    });
+  }
+};
+
 // --- PRE-APPROVED LIST MANAGEMENT ---
 
 // @desc    Get pre-approved user details list
