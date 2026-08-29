@@ -151,6 +151,14 @@ export const api = {
     return res.json();
   },
 
+  deleteUser: async (userId) => {
+    const res = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
   // Academic Management
   getDepartments: async () => {
     const res = await fetch(`${API_BASE_URL}/academic/departments`, {

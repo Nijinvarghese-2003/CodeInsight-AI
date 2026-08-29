@@ -207,18 +207,21 @@ export const deleteUserCascade = async (req, res) => {
       }
     }
 
-    // 3. Reset pre-approved status if user was pre-approved
+    // 3. Delete from PreApprovedUser directory list
+    let deletedPreApprovedCount = 0;
     if (user.email) {
       const officialId = (user.studentId || user.rollNo || user.employeeId || "").trim().toUpperCase();
-      const preApprovedQuery = {
-        email: user.email.toLowerCase().trim(),
-        role: user.role,
-      };
+      const preApprovedConditions = [
+        { email: user.email.toLowerCase().trim() },
+      ];
       if (officialId) {
-        preApprovedQuery.officialId = officialId;
+        preApprovedConditions.push({ officialId });
       }
 
-      await PreApprovedUser.updateMany(preApprovedQuery, { isRegistered: false });
+      const preApprovedResult = await PreApprovedUser.deleteMany({
+        $or: preApprovedConditions,
+      });
+      deletedPreApprovedCount = preApprovedResult.deletedCount || 0;
     }
 
     // 4. Delete the user from database
@@ -226,7 +229,7 @@ export const deleteUserCascade = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `User ${user.name} (${user.role}) and all corresponding data (${deletedSubmissionsCount} submissions, ${deletedAssignmentsCount} assignments) deleted successfully.`,
+      message: `User ${user.name} (${user.role}) and all corresponding data (${deletedSubmissionsCount} submissions, ${deletedAssignmentsCount} assignments, ${deletedPreApprovedCount} pre-approved entries) deleted successfully.`,
       deletedUser: {
         id: user._id,
         name: user.name,
@@ -235,6 +238,7 @@ export const deleteUserCascade = async (req, res) => {
       },
       deletedSubmissionsCount,
       deletedAssignmentsCount,
+      deletedPreApprovedCount,
     });
   } catch (error) {
     console.error("Delete user error:", error);

@@ -4,6 +4,7 @@ import {
   getAllUsers,
   updateUserRole,
   toggleUserStatus,
+  deleteUserCascade,
   getPreApprovedUsers,
   addPreApprovedUser,
   deletePreApprovedUser,
@@ -23,6 +24,8 @@ router.get("/stats", getSystemStats);
 router.get("/users", getAllUsers);
 router.put("/users/:id/role", updateUserRole);
 router.put("/users/:id/status", toggleUserStatus);
+router.delete("/users/:id", deleteUserCascade);
+
 
 // Pre-approved Directory Routes
 router.get("/preapproved", getPreApprovedUsers);
