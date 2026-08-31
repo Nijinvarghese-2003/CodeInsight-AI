@@ -173,7 +173,15 @@ export default function App() {
             <Route
               path="/faculty/submissions/:assignmentId"
               element={
-                <ProtectedRoute user={user} allowedRoles={["faculty"]}>
+                <ProtectedRoute user={user} allowedRoles={["faculty", "admin"]}>
+                  <SubmissionReview user={user} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/submissions/:assignmentId"
+              element={
+                <ProtectedRoute user={user} allowedRoles={["faculty", "admin"]}>
                   <SubmissionReview user={user} />
                 </ProtectedRoute>
               }
