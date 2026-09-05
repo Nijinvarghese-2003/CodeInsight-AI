@@ -403,13 +403,24 @@ export default function CodeWorkspace({ user }) {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  {latestSubmission.status !== "Accepted" && (
+                    <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-start gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <span>
+                        Time Complexity, AI Quality Score, Code Summary, and Recommended Improvements are <strong>Not Applicable</strong> for failing/incorrect solutions. Submit a correct solution passing all test cases to unlock AI analysis.
+                      </span>
+                    </div>
+                  )}
+
                   {/* Metric Cards Grid */}
                   <div className="grid grid-cols-3 gap-2.5">
                     <div className="glass p-3 rounded-2xl border border-cyan-500/20 text-center space-y-1 bg-[#090e1a]">
                       <Clock className="w-4 h-4 text-cyan-400 mx-auto" />
                       <div className="text-[10px] text-slate-400 uppercase font-bold">Time Comp.</div>
                       <div className="text-xs font-extrabold font-mono text-cyan-300">
-                        {latestSubmission.aiAnalysis.timeComplexity}
+                        {latestSubmission.status === "Accepted" && latestSubmission.aiAnalysis?.timeComplexity && latestSubmission.aiAnalysis.timeComplexity !== "N/A"
+                          ? latestSubmission.aiAnalysis.timeComplexity
+                          : "N/A"}
                       </div>
                     </div>
 
@@ -417,7 +428,9 @@ export default function CodeWorkspace({ user }) {
                       <Cpu className="w-4 h-4 text-violet-400 mx-auto" />
                       <div className="text-[10px] text-slate-400 uppercase font-bold">Space Comp.</div>
                       <div className="text-xs font-extrabold font-mono text-violet-300">
-                        {latestSubmission.aiAnalysis.spaceComplexity}
+                        {latestSubmission.status === "Accepted" && latestSubmission.aiAnalysis?.spaceComplexity && latestSubmission.aiAnalysis.spaceComplexity !== "N/A"
+                          ? latestSubmission.aiAnalysis.spaceComplexity
+                          : "N/A"}
                       </div>
                     </div>
 
@@ -425,7 +438,9 @@ export default function CodeWorkspace({ user }) {
                       <Sparkles className="w-4 h-4 text-amber-400 mx-auto" />
                       <div className="text-[10px] text-slate-400 uppercase font-bold">Quality</div>
                       <div className="text-xs font-extrabold font-mono text-amber-300">
-                        {latestSubmission.aiAnalysis.qualityScore}/100
+                        {latestSubmission.status === "Accepted" && latestSubmission.aiAnalysis?.qualityScore !== null && latestSubmission.aiAnalysis?.qualityScore !== undefined
+                          ? `${latestSubmission.aiAnalysis.qualityScore}/100`
+                          : "N/A"}
                       </div>
                     </div>
                   </div>
@@ -435,13 +450,15 @@ export default function CodeWorkspace({ user }) {
                     <h4 className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-violet-400" /> AI Code Summary
                     </h4>
-                    <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                      {latestSubmission.aiAnalysis.summary}
+                    <p className={`text-xs leading-relaxed ${latestSubmission.status === "Accepted" ? "text-slate-300 font-normal" : "text-slate-400 font-mono font-medium"}`}>
+                      {latestSubmission.status === "Accepted"
+                        ? latestSubmission.aiAnalysis?.summary || "Solution passed tests and meets quality standards."
+                        : "Not Applicable"}
                     </p>
                   </div>
 
                   {/* Best Practices */}
-                  {latestSubmission.aiAnalysis.bestPractices?.length > 0 && (
+                  {latestSubmission.status === "Accepted" && latestSubmission.aiAnalysis?.bestPractices?.length > 0 && (
                     <div className="glass p-4 rounded-2xl border border-cyan-500/20 space-y-2 bg-[#090e1a]">
                       <h4 className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Best Practices
@@ -457,7 +474,7 @@ export default function CodeWorkspace({ user }) {
                   )}
 
                   {/* Actionable Improvements */}
-                  {latestSubmission.aiAnalysis.improvements?.length > 0 && (
+                  {latestSubmission.status === "Accepted" && latestSubmission.aiAnalysis?.improvements?.length > 0 && (
                     <div className="glass p-4 rounded-2xl border border-amber-500/20 space-y-2 bg-[#090e1a]">
                       <h4 className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5" /> Recommended Improvements

@@ -49,11 +49,24 @@ export const submitSolution = async (req, res) => {
       code
     );
 
-    // 3. Perform AI Code Quality & Complexity Analysis
-    const aiAnalysisResults = await analyzeCodeQuality(
-      code,
-      submittedLanguage
-    );
+    // 3. Perform AI Code Quality & Complexity Analysis only if code is correct (status === "Accepted")
+    const isCorrect = judge0Results.status === "Accepted";
+    let aiAnalysisResults;
+    if (isCorrect) {
+      aiAnalysisResults = await analyzeCodeQuality(
+        code,
+        submittedLanguage
+      );
+    } else {
+      aiAnalysisResults = {
+        qualityScore: null,
+        timeComplexity: "N/A",
+        spaceComplexity: "N/A",
+        summary: "Not Applicable",
+        bestPractices: [],
+        improvements: [],
+      };
+    }
 
     // Determine if submission is Late (past assignment deadline)
     let isLate = false;

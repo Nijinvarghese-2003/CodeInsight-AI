@@ -339,14 +339,18 @@ export default function SubmissionReview({ user }) {
               <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-center">
                 <span className="text-[10px] text-slate-400 block font-bold uppercase">AI Quality</span>
                 <span className="font-mono font-extrabold text-xs mt-0.5 text-amber-400 block">
-                  {selectedSubmission.aiAnalysis?.qualityScore || 0}/100
+                  {selectedSubmission.status === "Accepted" && selectedSubmission.aiAnalysis?.qualityScore !== null && selectedSubmission.aiAnalysis?.qualityScore !== undefined
+                    ? `${selectedSubmission.aiAnalysis.qualityScore}/100`
+                    : "N/A"}
                 </span>
               </div>
 
               <div className="bg-[#050811] p-3 rounded-2xl border border-white/5 text-center">
                 <span className="text-[10px] text-slate-400 block font-bold uppercase">Time / Space</span>
                 <span className="font-mono font-bold text-xs mt-0.5 text-violet-300 block truncate">
-                  {selectedSubmission.aiAnalysis?.timeComplexity || "O(1)"} / {selectedSubmission.aiAnalysis?.spaceComplexity || "O(1)"}
+                  {selectedSubmission.status === "Accepted" && selectedSubmission.aiAnalysis?.timeComplexity && selectedSubmission.aiAnalysis.timeComplexity !== "N/A"
+                    ? `${selectedSubmission.aiAnalysis.timeComplexity} / ${selectedSubmission.aiAnalysis?.spaceComplexity || "N/A"}`
+                    : "N/A"}
                 </span>
               </div>
 
@@ -581,26 +585,41 @@ export default function SubmissionReview({ user }) {
                 </div>
               </div>
 
+              {selectedSubmission.status !== "Accepted" && (
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-start gap-2.5">
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <span>
+                    Time Complexity, Space Complexity, AI Quality Score, Diagnostic Summary, and Optimization Recommendations are <strong>Not Applicable</strong> for failing/incorrect submissions ({selectedSubmission.status}). Full AI diagnostics are exclusively evaluated on solutions passing all test suites.
+                  </span>
+                </div>
+              )}
+
               {/* Complexity Badges */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="glass p-5 rounded-2xl border border-cyan-500/20 bg-[#090e1a] text-center space-y-1">
                   <span className="text-xs text-slate-400 uppercase font-bold tracking-wider">Time Complexity</span>
                   <div className="text-2xl font-extrabold text-cyan-400 font-mono">
-                    {selectedSubmission.aiAnalysis?.timeComplexity || "O(1)"}
+                    {selectedSubmission.status === "Accepted" && selectedSubmission.aiAnalysis?.timeComplexity && selectedSubmission.aiAnalysis.timeComplexity !== "N/A"
+                      ? selectedSubmission.aiAnalysis.timeComplexity
+                      : "N/A"}
                   </div>
                 </div>
 
                 <div className="glass p-5 rounded-2xl border border-violet-500/20 bg-[#090e1a] text-center space-y-1">
                   <span className="text-xs text-slate-400 uppercase font-bold tracking-wider">Space Complexity</span>
                   <div className="text-2xl font-extrabold text-violet-400 font-mono">
-                    {selectedSubmission.aiAnalysis?.spaceComplexity || "O(1)"}
+                    {selectedSubmission.status === "Accepted" && selectedSubmission.aiAnalysis?.spaceComplexity && selectedSubmission.aiAnalysis.spaceComplexity !== "N/A"
+                      ? selectedSubmission.aiAnalysis.spaceComplexity
+                      : "N/A"}
                   </div>
                 </div>
 
                 <div className="glass p-5 rounded-2xl border border-amber-500/20 bg-[#090e1a] text-center space-y-1">
                   <span className="text-xs text-slate-400 uppercase font-bold tracking-wider">Quality Score</span>
                   <div className="text-2xl font-extrabold text-amber-400 font-mono">
-                    {selectedSubmission.aiAnalysis?.qualityScore || 0}/100
+                    {selectedSubmission.status === "Accepted" && selectedSubmission.aiAnalysis?.qualityScore !== null && selectedSubmission.aiAnalysis?.qualityScore !== undefined
+                      ? `${selectedSubmission.aiAnalysis.qualityScore}/100`
+                      : "N/A"}
                   </div>
                 </div>
               </div>
@@ -610,9 +629,11 @@ export default function SubmissionReview({ user }) {
                 <h4 className="text-xs font-bold text-violet-300 uppercase tracking-wider flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-violet-400" /> Diagnostic Summary
                 </h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  {selectedSubmission.aiAnalysis?.summary ||
-                    "Code parsed successfully. Solution matches structural expectations for the assigned task."}
+                <p className={`text-xs leading-relaxed ${selectedSubmission.status === "Accepted" ? "text-slate-300 font-normal" : "text-slate-400 font-mono font-medium"}`}>
+                  {selectedSubmission.status === "Accepted"
+                    ? selectedSubmission.aiAnalysis?.summary ||
+                      "Code parsed successfully. Solution matches structural expectations for the assigned task."
+                    : "Not Applicable"}
                 </p>
               </div>
 
@@ -622,7 +643,7 @@ export default function SubmissionReview({ user }) {
                   <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                     <CheckCircle className="w-4 h-4" /> Best Practices Adhered To
                   </h4>
-                  {selectedSubmission.aiAnalysis?.bestPractices &&
+                  {selectedSubmission.status === "Accepted" && selectedSubmission.aiAnalysis?.bestPractices &&
                   selectedSubmission.aiAnalysis.bestPractices.length > 0 ? (
                     <ul className="space-y-2">
                       {selectedSubmission.aiAnalysis.bestPractices.map((bp, i) => (
@@ -633,7 +654,11 @@ export default function SubmissionReview({ user }) {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-xs text-slate-400">Clean indentation, appropriate syntax identifiers.</p>
+                    <p className="text-xs text-slate-400 font-mono">
+                      {selectedSubmission.status === "Accepted"
+                        ? "Clean indentation, appropriate syntax identifiers."
+                        : "Not Applicable"}
+                    </p>
                   )}
                 </div>
 
@@ -641,7 +666,7 @@ export default function SubmissionReview({ user }) {
                   <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4" /> Optimization Recommendations
                   </h4>
-                  {selectedSubmission.aiAnalysis?.improvements &&
+                  {selectedSubmission.status === "Accepted" && selectedSubmission.aiAnalysis?.improvements &&
                   selectedSubmission.aiAnalysis.improvements.length > 0 ? (
                     <ul className="space-y-2">
                       {selectedSubmission.aiAnalysis.improvements.map((imp, i) => (
@@ -652,7 +677,11 @@ export default function SubmissionReview({ user }) {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-xs text-slate-400">No major optimization warnings detected.</p>
+                    <p className="text-xs text-slate-400 font-mono">
+                      {selectedSubmission.status === "Accepted"
+                        ? "No major optimization warnings detected."
+                        : "Not Applicable"}
+                    </p>
                   )}
                 </div>
               </div>
@@ -935,16 +964,26 @@ export default function SubmissionReview({ user }) {
                           </td>
 
                           <td className="p-4 font-mono">
-                            <div className="text-cyan-300 font-bold">
-                              {sub.aiAnalysis?.timeComplexity || "O(1)"}
-                            </div>
-                            <div className="text-[10px] text-slate-400">
-                              Space: {sub.aiAnalysis?.spaceComplexity || "O(1)"}
-                            </div>
+                            {sub.status === "Accepted" && sub.aiAnalysis?.timeComplexity && sub.aiAnalysis.timeComplexity !== "N/A" ? (
+                              <>
+                                <div className="text-cyan-300 font-bold">
+                                  {sub.aiAnalysis.timeComplexity}
+                                </div>
+                                <div className="text-[10px] text-slate-400">
+                                  Space: {sub.aiAnalysis?.spaceComplexity || "N/A"}
+                                </div>
+                              </>
+                            ) : (
+                              <span className="text-slate-500 font-medium">N/A</span>
+                            )}
                           </td>
 
-                          <td className="p-4 font-mono font-bold text-amber-300">
-                            {sub.aiAnalysis?.qualityScore || 0}/100
+                          <td className="p-4 font-mono font-bold">
+                            {sub.status === "Accepted" && sub.aiAnalysis?.qualityScore !== null && sub.aiAnalysis?.qualityScore !== undefined ? (
+                              <span className="text-amber-300">{sub.aiAnalysis.qualityScore}/100</span>
+                            ) : (
+                              <span className="text-slate-500 font-medium">N/A</span>
+                            )}
                           </td>
 
                           <td className="p-4">

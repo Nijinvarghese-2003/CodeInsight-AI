@@ -164,14 +164,18 @@ export default function StudentSubmissions() {
                   <div className="p-3 rounded-2xl bg-[#090e1a] border border-white/5 shadow-inner">
                     <span className="text-[11px] text-slate-400 block font-medium">Time Complexity</span>
                     <span className="font-mono font-bold text-cyan-300 mt-1 block">
-                      {sub.aiAnalysis?.timeComplexity || "N/A"}
+                      {sub.status === "Accepted" && sub.aiAnalysis?.timeComplexity && sub.aiAnalysis.timeComplexity !== "N/A"
+                        ? sub.aiAnalysis.timeComplexity
+                        : "N/A"}
                     </span>
                   </div>
 
                   <div className="p-3 rounded-2xl bg-[#090e1a] border border-white/5 shadow-inner">
                     <span className="text-[11px] text-slate-400 block font-medium">AI Quality Score</span>
                     <span className="font-mono font-bold text-violet-300 mt-1 block">
-                      {sub.aiAnalysis?.qualityScore || 0}/100
+                      {sub.status === "Accepted" && sub.aiAnalysis?.qualityScore !== null && sub.aiAnalysis?.qualityScore !== undefined
+                        ? `${sub.aiAnalysis.qualityScore}/100`
+                        : "N/A"}
                     </span>
                   </div>
 

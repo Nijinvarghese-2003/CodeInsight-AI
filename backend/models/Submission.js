@@ -51,9 +51,9 @@ const submissionSchema = new mongoose.Schema(
     testCaseResults: [testCaseResultSchema],
     // LLM & Code Quality Analysis
     aiAnalysis: {
-      qualityScore: { type: Number, default: 0 },
-      timeComplexity: { type: String, default: "O(1)" },
-      spaceComplexity: { type: String, default: "O(1)" },
+      qualityScore: { type: Number, default: null },
+      timeComplexity: { type: String, default: "N/A" },
+      spaceComplexity: { type: String, default: "N/A" },
       summary: { type: String, default: "" },
       bestPractices: [{ type: String }],
       improvements: [{ type: String }],
