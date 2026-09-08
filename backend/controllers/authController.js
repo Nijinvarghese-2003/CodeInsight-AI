@@ -49,68 +49,49 @@ export const sendRegistrationOTP = async (req, res) => {
       });
     }
 
-    // Student verification against PreApprovedUser list
-    if (role === "student") {
-      const studentIdToVerify = (studentId || rollNo || "").trim().toUpperCase();
-      if (!department || !course || (!rollNo && !studentId)) {
-        return res.status(400).json({
-          success: false,
-          message: "Please select Department, Course, and enter Student ID / Roll Number",
-        });
-      }
+    // Pre-verification against PreApprovedUser list
+    const officialIdToVerify = (role === "student" ? (studentId || rollNo || "") : (employeeId || "")).trim().toUpperCase();
 
-      const preApprovedRecord = await PreApprovedUser.findOne({
-        role: "student",
-        email: normalizedEmail,
-        officialId: studentIdToVerify,
+    if (role === "student" && (!department || !course || !officialIdToVerify)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select Department, Course, and enter Student ID / Roll Number",
       });
-
-      if (!preApprovedRecord) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Pre-verification failed: Student ID and Official Email combination not found in pre-approved records. Contact Administrator.",
-        });
-      }
-
-      if (preApprovedRecord.isRegistered) {
-        return res.status(400).json({
-          success: false,
-          message: "This student record has already been registered.",
-        });
-      }
     }
 
-    // Faculty verification against PreApprovedUser list
-    if (role === "faculty") {
-      const facultyIdToVerify = (employeeId || "").trim().toUpperCase();
-      if (!department || !facultyIdToVerify) {
-        return res.status(400).json({
-          success: false,
-          message: "Please select Department and enter Faculty / Employee ID",
-        });
-      }
-
-      const preApprovedRecord = await PreApprovedUser.findOne({
-        role: "faculty",
-        email: normalizedEmail,
-        officialId: facultyIdToVerify,
+    if (role === "faculty" && (!department || !officialIdToVerify)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select Department and enter Faculty / Employee ID",
       });
+    }
 
-      if (!preApprovedRecord) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Pre-verification failed: Faculty ID and Official Email combination not found in pre-approved records. Contact Administrator.",
-        });
-      }
+    const preApprovedRecord = await PreApprovedUser.findOne({
+      email: normalizedEmail,
+      officialId: officialIdToVerify,
+    });
 
-      if (preApprovedRecord.isRegistered) {
-        return res.status(400).json({
-          success: false,
-          message: "This faculty record has already been registered.",
-        });
-      }
+    if (!preApprovedRecord) {
+      return res.status(400).json({
+        success: false,
+        message:
+          `Pre-verification failed: ID (${officialIdToVerify}) and Official Email (${normalizedEmail}) combination not found in the pre-approved list. Contact Administrator.`,
+      });
+    }
+
+    // Role MUST match the pre-approved role set by the admin
+    if (preApprovedRecord.role !== role) {
+      return res.status(400).json({
+        success: false,
+        message: `Pre-verification failed: This record is pre-approved for the role "${preApprovedRecord.role.toUpperCase()}". You must register as a ${preApprovedRecord.role}.`,
+      });
+    }
+
+    if (preApprovedRecord.isRegistered) {
+      return res.status(400).json({
+        success: false,
+        message: `This ${preApprovedRecord.role} record has already been registered.`,
+      });
     }
 
     // Send OTP via Twilio Verify
@@ -224,56 +205,53 @@ export const registerUser = async (req, res) => {
     let initialStatus = "active";
     let preApprovedRecord = null;
 
-    // Student verification against PreApprovedUser list
-    if (role === "student") {
-      const studentIdToVerify = (studentId || rollNo || "").trim().toUpperCase();
-      if (!department || !course || (!rollNo && !studentId)) {
-        return res.status(400).json({
-          success: false,
-          message: "Please select Department, Course, and enter Student ID / Roll Number",
-        });
-      }
+    // Pre-verification against PreApprovedUser list
+    const officialIdToVerify = (role === "student" ? (studentId || rollNo || "") : (employeeId || "")).trim().toUpperCase();
 
-      preApprovedRecord = await PreApprovedUser.findOne({
-        role: "student",
-        email: normalizedEmail,
-        officialId: studentIdToVerify,
+    if (role === "student" && (!department || !course || !officialIdToVerify)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select Department, Course, and enter Student ID / Roll Number",
       });
-
-      if (!preApprovedRecord) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Pre-verification failed: Student ID and Official Email combination not found in pre-approved list. Contact Administrator.",
-        });
-      }
     }
 
-    // Faculty verification against PreApprovedUser list
-    if (role === "faculty") {
-      const facultyIdToVerify = (employeeId || "").trim().toUpperCase();
-      if (!department || !facultyIdToVerify) {
-        return res.status(400).json({
-          success: false,
-          message: "Please select Department and enter Faculty / Employee ID",
-        });
-      }
-
-      preApprovedRecord = await PreApprovedUser.findOne({
-        role: "faculty",
-        email: normalizedEmail,
-        officialId: facultyIdToVerify,
+    if (role === "faculty" && (!department || !officialIdToVerify)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select Department and enter Faculty / Employee ID",
       });
+    }
 
-      if (!preApprovedRecord) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Pre-verification failed: Faculty ID and Official Email combination not found in pre-approved list. Contact Administrator.",
-        });
-      }
+    preApprovedRecord = await PreApprovedUser.findOne({
+      email: normalizedEmail,
+      officialId: officialIdToVerify,
+    });
 
-      // Faculty requires Admin approval and assignment of lab subjects
+    if (!preApprovedRecord) {
+      return res.status(400).json({
+        success: false,
+        message:
+          `Pre-verification failed: ID (${officialIdToVerify}) and Official Email (${normalizedEmail}) combination not found in the pre-approved list. Contact Administrator.`,
+      });
+    }
+
+    // Role MUST match the pre-approved role set by the admin
+    if (preApprovedRecord.role !== role) {
+      return res.status(400).json({
+        success: false,
+        message: `Pre-verification failed: This record is pre-approved for the role "${preApprovedRecord.role.toUpperCase()}". You must register as a ${preApprovedRecord.role}.`,
+      });
+    }
+
+    if (preApprovedRecord.isRegistered) {
+      return res.status(400).json({
+        success: false,
+        message: `This ${preApprovedRecord.role} record has already been registered.`,
+      });
+    }
+
+    // Faculty requires Admin approval and assignment of lab subjects
+    if (preApprovedRecord.role === "faculty") {
       isApproved = false;
       initialStatus = "pending";
     }
@@ -293,7 +271,7 @@ export const registerUser = async (req, res) => {
       name,
       email: normalizedEmail,
       password: hashedPassword,
-      role,
+      role: preApprovedRecord.role, // Strictly enforce the role from pre-approved list
       phone: phone || "",
 
       department: department || null,

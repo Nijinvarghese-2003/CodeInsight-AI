@@ -71,18 +71,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleRoleChange = async (userId, newRole) => {
-    try {
-      const res = await api.updateUserRole(userId, newRole);
-      if (res.success) {
-        setUsers((prev) =>
-          prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u))
-        );
-      }
-    } catch (err) {
-      alert("Failed to update role");
-    }
-  };
+
 
   const handleStatusToggle = async (userId, currentStatus) => {
     const newStatus = currentStatus === "blocked" ? "active" : "blocked";
@@ -473,17 +462,26 @@ export default function AdminDashboard() {
                           )}
                         </td>
 
-                        {/* Current Role */}
+                        {/* Current Role (Fixed via Pre-Approval) */}
                         <td className="p-4">
-                          <select
-                            value={u.role}
-                            onChange={(e) => handleRoleChange(u._id, e.target.value)}
-                            className="bg-[#090e1a] border border-white/10 text-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold capitalize focus:outline-none cursor-pointer"
+                          <span
+                            className={`px-2.5 py-1 rounded-full font-bold inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider ${
+                              u.role === "admin"
+                                ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                                : u.role === "faculty"
+                                ? "bg-violet-500/15 text-violet-300 border border-violet-500/30"
+                                : "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
+                            }`}
                           >
-                            <option value="student">Student</option>
-                            <option value="faculty">Faculty</option>
-                            <option value="admin">Admin</option>
-                          </select>
+                            {u.role === "admin" ? (
+                              <Shield className="w-3 h-3 text-amber-400" />
+                            ) : u.role === "faculty" ? (
+                              <UserCheck className="w-3 h-3 text-violet-400" />
+                            ) : (
+                              <GraduationCap className="w-3 h-3 text-cyan-400" />
+                            )}
+                            {u.role}
+                          </span>
                         </td>
 
                         {/* Status */}
