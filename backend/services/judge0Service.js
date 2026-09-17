@@ -243,7 +243,7 @@ async function executeLocally(code, language, input, expectedOutput) {
   try {
     if (lang === "python" || lang === "py") {
       // For Python: Wrap input prompt so prompt strings aren't printed to stdout during automated tests,
-      // and pipe stdin properly.
+      // and pipe stdin properly. Also auto-invoke function if no driver/print execution exists.
       const pythonShim = `import sys, builtins
 _orig_input = builtins.input
 def _clean_input(prompt=""):
@@ -258,8 +258,49 @@ except Exception:
     pass
 
 `;
+      let finalPythonCode = pythonShim + code;
+
+      // Check if student only wrote a function definition and didn't include driver/call
+      if (!code.includes("__main__") && !code.includes("print(") && code.includes("def ")) {
+        finalPythonCode += `\n
+# Automated Test Runner Harness
+if __name__ == "__main__":
+    import inspect
+    _raw_lines = sys.stdin.read().split()
+    # Find the first user-defined function in globals
+    _func = None
+    for _k, _v in list(globals().items()):
+        if inspect.isfunction(_v) and not _k.startswith('_') and _k != 'solve_main':
+            _func = _v
+            break
+    if _func:
+        try:
+            _sig = inspect.signature(_func)
+            _param_count = len(_sig.parameters)
+            if _param_count == 0:
+                _res = _func()
+            elif _param_count == 1:
+                _val = _raw_lines[0] if _raw_lines else ""
+                try: _val = int(_val)
+                except ValueError: pass
+                _res = _func(_val)
+            else:
+                _args = []
+                for _i in range(min(_param_count, len(_raw_lines))):
+                    _v = _raw_lines[_i]
+                    try: _v = int(_v)
+                    except ValueError: pass
+                    _args.append(_v)
+                _res = _func(*_args)
+            if _res is not None:
+                print(_res)
+        except Exception as _e:
+            sys.stderr.write(str(_e))
+`;
+      }
+
       const scriptPath = path.join(tempDir, "solution.py");
-      fs.writeFileSync(scriptPath, pythonShim + code, "utf8");
+      fs.writeFileSync(scriptPath, finalPythonCode, "utf8");
 
       const res = await executeProcess("python", [`"${scriptPath}"`], { cwd: tempDir, timeout: 6000 }, input);
       executionTime = res.executionTime;
@@ -304,6 +345,26 @@ global.readToken = function() {
 };
 
 ${code}
+
+// Automatic function test harness if no console.log / main call exists
+if (!(${JSON.stringify(code)}).includes("console.log(") && !(${JSON.stringify(code)}).includes("main()")) {
+  try {
+    const _fnMatch = (${JSON.stringify(code)}).match(/function\\s+([a-zA-Z0-9_$]+)/);
+    if (_fnMatch && typeof eval(_fnMatch[1]) === 'function') {
+      const _targetFn = eval(_fnMatch[1]);
+      const _paramCount = _targetFn.length;
+      let _args = [];
+      if (_paramCount === 1) {
+        const _v = _tokens[0] !== undefined ? (isNaN(Number(_tokens[0])) ? _tokens[0] : Number(_tokens[0])) : _stdinData.trim();
+        _args = [_v];
+      } else if (_paramCount > 1) {
+        _args = _tokens.slice(0, _paramCount).map(t => isNaN(Number(t)) ? t : Number(t));
+      }
+      const _res = _targetFn(..._args);
+      if (_res !== undefined) console.log(_res);
+    }
+  } catch (_err) {}
+}
 `;
       const scriptPath = path.join(tempDir, "solution.js");
       fs.writeFileSync(scriptPath, jsWrapper, "utf8");

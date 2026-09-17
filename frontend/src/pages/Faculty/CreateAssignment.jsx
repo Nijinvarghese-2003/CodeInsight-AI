@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../../services/api";
+import { generateStarterCode } from "../../utils/codeTemplateGenerator";
 import {
   Plus,
   Trash2,
@@ -13,6 +14,9 @@ import {
   Clock,
   Layers,
   Sparkles,
+  Code2,
+  RotateCcw,
+  Cpu,
 } from "lucide-react";
 
 export default function CreateAssignment({ user }) {
@@ -29,9 +33,15 @@ export default function CreateAssignment({ user }) {
     requiredLanguage: "c",
     description: "",
     instructions: "",
+    functionName: "solution",
+    returnType: "int",
+    parameters: "int n",
+    starterCode: "",
     deadline: "",
     maxPoints: 100,
   });
+
+  const [isCustomStarterEdited, setIsCustomStarterEdited] = useState(false);
 
   // Testcases with pure freeform multiline input & output support
   const [testCases, setTestCases] = useState([
@@ -46,6 +56,19 @@ export default function CreateAssignment({ user }) {
       isHidden: false,
     },
   ]);
+
+  // Generate initial starter code template on mount or language/function changes
+  useEffect(() => {
+    if (!isCustomStarterEdited) {
+      const generated = generateStarterCode({
+        language: formData.requiredLanguage,
+        functionName: formData.functionName,
+        returnType: formData.returnType,
+        parameters: formData.parameters,
+      });
+      setFormData((prev) => ({ ...prev, starterCode: generated }));
+    }
+  }, [formData.requiredLanguage, formData.functionName, formData.returnType, formData.parameters, isCustomStarterEdited]);
 
   useEffect(() => {
     fetchFacultyLabs();
@@ -115,6 +138,22 @@ export default function CreateAssignment({ user }) {
       ...testCases,
       { input: "", expectedOutput: "", isHidden: false },
     ]);
+  };
+
+  const handleStarterCodeChange = (e) => {
+    setIsCustomStarterEdited(true);
+    setFormData((prev) => ({ ...prev, starterCode: e.target.value }));
+  };
+
+  const handleRegenerateTemplate = () => {
+    setIsCustomStarterEdited(false);
+    const generated = generateStarterCode({
+      language: formData.requiredLanguage,
+      functionName: formData.functionName,
+      returnType: formData.returnType,
+      parameters: formData.parameters,
+    });
+    setFormData((prev) => ({ ...prev, starterCode: generated }));
   };
 
   const removeTestCase = (index) => {
@@ -356,12 +395,103 @@ export default function CreateAssignment({ user }) {
           </div>
         </div>
 
-        {/* 2. Test Cases Builder Card (Pure Freeform Stdin & Stdout) */}
+        {/* 2. Function Signature & Starter Code Specification Card */}
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 space-y-5 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+            <div>
+              <h2 className="text-xs font-bold uppercase tracking-wider text-violet-400 flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-violet-400" /> 2. Function Specification & Starter Code
+              </h2>
+              <p className="text-[11px] text-slate-400 mt-1">
+                Define the function name, arguments, and return type. The template code below will be provided to the student in their workspace.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleRegenerateTemplate}
+              className="px-3 py-1.5 rounded-xl bg-violet-500/15 hover:bg-violet-500/25 text-violet-300 border border-violet-500/30 text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
+              title="Reset code template to match current function parameters"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Regenerate Template
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Function Name *</label>
+              <input
+                type="text"
+                name="functionName"
+                value={formData.functionName}
+                onChange={handleInputChange}
+                required
+                placeholder="e.g. factorial, reverseString, solution"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Return Type *</label>
+              <input
+                type="text"
+                name="returnType"
+                value={formData.returnType}
+                onChange={handleInputChange}
+                required
+                placeholder="e.g. int, float, double, string, bool, void"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Function Parameters *</label>
+              <input
+                type="text"
+                name="parameters"
+                value={formData.parameters}
+                onChange={handleInputChange}
+                required
+                placeholder="e.g. int n, or int a, int b"
+                className="w-full px-4 py-2.5 rounded-xl neu-input text-white text-xs font-mono focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Code Template Preview / Customizer */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <Cpu className="w-3.5 h-3.5 text-cyan-400" /> Student Starter Code Template ({formData.requiredLanguage.toUpperCase()})
+              </label>
+              <span className="text-[10px] text-slate-400">
+                {isCustomStarterEdited ? "Customized Template" : "Auto-generated from function signature"}
+              </span>
+            </div>
+
+            <div className="bg-[#050811] rounded-2xl border border-white/10 p-1 shadow-inner">
+              <textarea
+                name="starterCode"
+                rows={10}
+                value={formData.starterCode}
+                onChange={handleStarterCodeChange}
+                spellCheck={false}
+                placeholder="Starter code that will be loaded into student's coding editor..."
+                className="w-full bg-transparent p-3.5 text-slate-200 font-mono text-xs focus:outline-none resize-y leading-relaxed"
+              />
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Students will receive this function skeleton with its parameters and default return value to complete.
+            </p>
+          </div>
+        </div>
+
+        {/* 3. Test Cases Builder Card (Pure Freeform Stdin & Stdout) */}
         <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div>
               <h2 className="text-xs font-bold uppercase tracking-wider text-violet-400 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-violet-400" /> 2. Judge0 Test Suite Cases ({testCases.length})
+                <Layers className="w-4 h-4 text-violet-400" /> 3. Judge0 Test Suite Cases ({testCases.length})
               </h2>
               <p className="text-[11px] text-slate-400 mt-1">
                 Provide freeform standard input (stdin) and expected output (stdout) for automated evaluation.

@@ -139,6 +139,13 @@ export default function FacultyDashboard({ user }) {
                     {assignment.description}
                   </p>
 
+                  {assignment.functionName && (
+                    <div className="text-[11px] font-mono text-violet-300/90 bg-[#050811] px-2.5 py-1 rounded-lg border border-white/5 flex items-center gap-1.5">
+                      <span className="text-slate-400">Target fn:</span>
+                      <strong className="text-violet-300">{assignment.functionName}({assignment.parameters || ""}) &rarr; {assignment.returnType || "int"}</strong>
+                    </div>
+                  )}
+
                   <div className="pt-3 border-t border-white/5 text-xs text-slate-400 flex items-center justify-between">
                     <span>Test Cases: <strong className="text-white font-mono">{assignment.testCases?.length || 0}</strong></span>
                     <span>Max Points: <strong className="text-violet-300 font-mono">{assignment.maxPoints}</strong></span>

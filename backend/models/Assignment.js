@@ -65,6 +65,25 @@ const assignmentSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    functionName: {
+      type: String,
+      default: "solution",
+      trim: true,
+    },
+    returnType: {
+      type: String,
+      default: "int",
+      trim: true,
+    },
+    parameters: {
+      type: String,
+      default: "int n",
+      trim: true,
+    },
+    starterCode: {
+      type: String,
+      default: "",
+    },
     testCases: [testCaseSchema],
     deadline: {
       type: Date,
