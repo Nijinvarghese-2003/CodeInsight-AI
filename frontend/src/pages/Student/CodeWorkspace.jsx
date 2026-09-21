@@ -18,7 +18,6 @@ import {
   AlertTriangle,
   FileCode,
   Check,
-  Zap,
 } from "lucide-react";
 
 export default function CodeWorkspace({ user }) {
@@ -205,34 +204,6 @@ export default function CodeWorkspace({ user }) {
             )}
           </div>
 
-          {/* Function Specification & Contract Card */}
-          <div className="glass-panel p-5 rounded-3xl border border-cyan-500/20 bg-gradient-to-r from-[#090e1a] via-[#0b1329] to-[#090e1a] space-y-3 shadow-md">
-            <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
-              <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-cyan-400" />
-                <span className="text-xs font-bold text-white uppercase tracking-wider">Required Function Specification</span>
-              </div>
-              <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 font-mono text-[10px] font-bold border border-cyan-500/30">
-                RETURN TYPE: {assignment.returnType || "int"}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="bg-[#050811] p-3 rounded-xl border border-white/5 space-y-1 font-mono">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Function Signature</span>
-                <span className="text-cyan-300 font-bold">
-                  {assignment.functionName || "solution"}({assignment.parameters || "int n"}) &rarr; {assignment.returnType || "int"}
-                </span>
-              </div>
-
-              <div className="bg-[#050811] p-3 rounded-xl border border-white/5 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Test Case Verification</span>
-                <span className="text-slate-200 text-xs">
-                  Automated tests verify that your function returns the expected value corresponding to each test case input.
-                </span>
-              </div>
-            </div>
-          </div>
 
           {/* Interactive Code Editor */}
           <div className="glass-panel rounded-3xl border border-white/10 overflow-hidden flex flex-col shadow-[0_15px_40px_rgba(0,0,0,0.6)]">

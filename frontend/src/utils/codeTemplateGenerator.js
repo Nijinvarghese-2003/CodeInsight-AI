@@ -1,9 +1,9 @@
 /**
- * Utility to generate boilerplate function signatures, return types, return value placeholders,
- * and input driver test harnesses for all supported programming languages.
+ * Utility to generate concise starter code templates and function skeletons
+ * for all supported programming languages.
  */
 
-// Helper to determine a reasonable default return value based on return type
+// Helper to determine a default return value based on return type
 export function getDefaultReturnValue(returnType, language) {
   const normType = (returnType || "").toLowerCase().trim();
   const lang = (language || "").toLowerCase().trim();
@@ -24,8 +24,7 @@ export function getDefaultReturnValue(returnType, language) {
     normType.includes("double")
   ) {
     if (normType.includes("[]") || normType.includes("*") || normType.includes("vector") || normType.includes("list")) {
-      if (lang === "python") return "[]";
-      if (lang === "javascript") return "[]";
+      if (lang === "python" || lang === "javascript") return "[]";
       if (lang === "java") return "new int[]{}";
       if (lang === "cpp") return "{}";
       return "NULL";
@@ -34,14 +33,10 @@ export function getDefaultReturnValue(returnType, language) {
   }
   if (normType.includes("char*") || normType.includes("string") || normType === "str") {
     if (lang === "c") return '""';
-    if (lang === "python") return '""';
-    if (lang === "java") return '""';
-    if (lang === "cpp") return '""';
     return '""';
   }
   if (normType.includes("[]") || normType.includes("array") || normType.includes("vector") || normType.includes("list")) {
-    if (lang === "python") return "[]";
-    if (lang === "javascript") return "[]";
+    if (lang === "python" || lang === "javascript") return "[]";
     if (lang === "java") return "null";
     if (lang === "cpp") return "{}";
     return "NULL";
@@ -49,9 +44,7 @@ export function getDefaultReturnValue(returnType, language) {
 
   // Generic fallback
   if (lang === "python") return "None";
-  if (lang === "c") return "0";
-  if (lang === "cpp") return "0";
-  if (lang === "java") return "null";
+  if (lang === "c" || lang === "cpp") return "0";
   return "null";
 }
 
@@ -60,61 +53,55 @@ export function getDefaultReturnValue(returnType, language) {
  */
 export function normalizeParamsForLanguage(params, language) {
   if (!params || !params.trim()) {
-    if (language === "c" || language === "cpp") return "int n";
-    if (language === "java") return "int n";
-    if (language === "python") return "n: int";
+    if (language === "c" || language === "cpp" || language === "java") return "int n";
     return "n";
   }
 
   const raw = params.trim();
 
-  if (language === "python") {
-    // If user typed 'int a, int b' convert to 'a, b' or 'a: int, b: int'
+  if (language === "python" || language === "javascript") {
+    // Clean parameter names without static type prefixes (e.g., 'int a, int b' -> 'a, b')
     return raw
       .split(",")
       .map((p) => {
         const parts = p.trim().split(/\s+/);
-        if (parts.length >= 2) {
-          const type = parts[0];
-          const name = parts[parts.length - 1].replace(/[\[\]*]/g, "");
-          return `${name}: ${type === "int" ? "int" : type === "string" || type === "String" ? "str" : type === "float" || type === "double" ? "float" : "any"}`;
-        }
-        return p.trim();
+        return parts[parts.length - 1].replace(/[\[\]*&]/g, "");
       })
+      .filter(Boolean)
       .join(", ");
   }
 
-  if (language === "javascript") {
-    // Strip static types if provided like 'int a, int b' -> 'a, b'
-    return raw
-      .split(",")
-      .map((p) => {
-        const parts = p.trim().split(/\s+/);
-        return parts[parts.length - 1].replace(/[\[\]*]/g, "");
-      })
-      .join(", ");
-  }
-
-  return raw;
+  // C, C++, Java: ensure each parameter has a type if omitted
+  return raw
+    .split(",")
+    .map((p) => {
+      const trimmed = p.trim();
+      const parts = trimmed.split(/\s+/);
+      if (parts.length === 1 && !["int", "float", "double", "char", "bool", "void", "String", "string"].includes(parts[0])) {
+        return `int ${trimmed}`;
+      }
+      return trimmed;
+    })
+    .join(", ");
 }
 
 /**
- * Generate standard starter code template for a given language and function specification.
+ * Generate a concise starter code template for a given language and function signature.
  */
 export function generateStarterCode({
   language = "c",
   functionName = "solution",
   returnType = "int",
   parameters = "int n",
-  description = "",
 }) {
   const lang = (language || "c").toLowerCase().trim();
   const fnName = (functionName || "solution").trim();
   const retType = (returnType || "int").trim();
   const rawParams = (parameters || "int n").trim();
   const defaultRet = getDefaultReturnValue(retType, lang);
+  const isVoid = retType.toLowerCase().includes("void");
 
-  // Extract parameter names for function call in driver
+  // Extract raw parameter names
   const paramNames = rawParams
     .split(",")
     .map((p) => {
@@ -127,32 +114,30 @@ export function generateStarterCode({
 
   switch (lang) {
     case "c": {
-      const paramStr = rawParams.includes("int") || rawParams.includes("char") || rawParams.includes("float") || rawParams.includes("double") || rawParams.includes("bool") || rawParams.includes("void")
-        ? rawParams
-        : `int ${rawParams}`;
+      const cParams = normalizeParamsForLanguage(rawParams, "c");
+      const fnReturnStmt = isVoid ? "" : `\n    return ${defaultRet};`;
 
-      // Check if multiple args or single arg
       let driverBody = "";
       if (paramNames.length <= 1) {
-        driverBody = `    int ${paramNames[0] || "n"};\n    if (scanf("%d", &${paramNames[0] || "n"}) == 1) {\n        printf("%d\\n", ${fnName}(${paramNames[0] || "n"}));\n    }`;
-      } else if (paramNames.length === 2) {
-        driverBody = `    int ${paramNames[0]}, ${paramNames[1]};\n    if (scanf("%d %d", &${paramNames[0]}, &${paramNames[1]}) == 2) {\n        printf("%d\\n", ${fnName}(${paramNames[0]}, ${paramNames[1]}));\n    }`;
+        const p0 = paramNames[0] || "n";
+        const callStmt = isVoid
+          ? `${fnName}(${p0});`
+          : `printf("%d\\n", ${fnName}(${p0}));`;
+        driverBody = `    int ${p0};\n    scanf("%d", &${p0});\n    ${callStmt}`;
       } else {
-        driverBody = `    // Read inputs from stdin\n    int ${paramNames.join(", ")};\n    if (scanf("${paramNames.map(() => "%d").join(" ")}", ${paramNames.map(p => `&${p}`).join(", ")}) == ${paramNames.length}) {\n        printf("%d\\n", ${fnName}(${callArgs}));\n    }`;
+        const decl = `int ${paramNames.join(", ")};`;
+        const fmt = paramNames.map(() => "%d").join(" ");
+        const addrs = paramNames.map((p) => `&${p}`).join(", ");
+        const callStmt = isVoid
+          ? `${fnName}(${callArgs});`
+          : `printf("%d\\n", ${fnName}(${callArgs}));`;
+        driverBody = `    ${decl}\n    scanf("${fmt}", ${addrs});\n    ${callStmt}`;
       }
 
       return `#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
 
-/**
- * Function: ${fnName}
- * Return Type: ${retType}
- */
-${retType} ${fnName}(${paramStr}) {
-    // Write your solution here
-    return ${defaultRet};
+${retType} ${fnName}(${cParams}) {
+    // Write your code here${fnReturnStmt}
 }
 
 int main() {
@@ -162,29 +147,30 @@ ${driverBody}
     }
 
     case "cpp": {
-      const paramStr = rawParams.includes("int") || rawParams.includes("char") || rawParams.includes("string") || rawParams.includes("float") || rawParams.includes("double") || rawParams.includes("bool")
-        ? rawParams
-        : `int ${rawParams}`;
+      const cppParams = normalizeParamsForLanguage(rawParams, "cpp");
+      const fnReturnStmt = isVoid ? "" : `\n    return ${defaultRet};`;
 
       let driverBody = "";
       if (paramNames.length <= 1) {
-        driverBody = `    int ${paramNames[0] || "n"};\n    if (cin >> ${paramNames[0] || "n"}) {\n        cout << ${fnName}(${paramNames[0] || "n"}) << endl;\n    }`;
+        const p0 = paramNames[0] || "n";
+        const callStmt = isVoid
+          ? `${fnName}(${p0});`
+          : `cout << ${fnName}(${p0}) << endl;`;
+        driverBody = `    int ${p0};\n    cin >> ${p0};\n    ${callStmt}`;
       } else {
-        driverBody = `    int ${paramNames.join(", ")};\n    if (cin >> ${paramNames.join(" >> ")}) {\n        cout << ${fnName}(${callArgs}) << endl;\n    }`;
+        const decl = `int ${paramNames.join(", ")};`;
+        const cinStmt = `cin >> ${paramNames.join(" >> ")};`;
+        const callStmt = isVoid
+          ? `${fnName}(${callArgs});`
+          : `cout << ${fnName}(${callArgs}) << endl;`;
+        driverBody = `    ${decl}\n    ${cinStmt}\n    ${callStmt}`;
       }
 
       return `#include <iostream>
-#include <vector>
-#include <string>
 using namespace std;
 
-/**
- * Function: ${fnName}
- * Return Type: ${retType}
- */
-${retType} ${fnName}(${paramStr}) {
-    // Write your solution here
-    return ${defaultRet};
+${retType} ${fnName}(${cppParams}) {
+    // Write your code here${fnReturnStmt}
 }
 
 int main() {
@@ -194,27 +180,29 @@ ${driverBody}
     }
 
     case "java": {
-      const paramStr = rawParams.includes("int") || rawParams.includes("String") || rawParams.includes("char") || rawParams.includes("double") || rawParams.includes("boolean")
-        ? rawParams
-        : `int ${rawParams}`;
+      const javaParams = normalizeParamsForLanguage(rawParams, "java");
+      const fnReturnStmt = isVoid ? "" : `\n        return ${defaultRet};`;
 
       let driverBody = "";
       if (paramNames.length <= 1) {
-        driverBody = `        Scanner sc = new Scanner(System.in);\n        if (sc.hasNextInt()) {\n            int ${paramNames[0] || "n"} = sc.nextInt();\n            System.out.println(${fnName}(${paramNames[0] || "n"}));\n        }`;
+        const p0 = paramNames[0] || "n";
+        const callStmt = isVoid
+          ? `${fnName}(${p0});`
+          : `System.out.println(${fnName}(${p0}));`;
+        driverBody = `        Scanner sc = new Scanner(System.in);\n        int ${p0} = sc.nextInt();\n        ${callStmt}`;
       } else {
-        driverBody = `        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            ${paramNames.map(p => `int ${p} = sc.nextInt();`).join("\n            ")}\n            System.out.println(${fnName}(${callArgs}));\n        }`;
+        const readStmts = paramNames.map((p) => `int ${p} = sc.nextInt();`).join("\n        ");
+        const callStmt = isVoid
+          ? `${fnName}(${callArgs});`
+          : `System.out.println(${fnName}(${callArgs}));`;
+        driverBody = `        Scanner sc = new Scanner(System.in);\n        ${readStmts}\n        ${callStmt}`;
       }
 
-      return `import java.util.*;
+      return `import java.util.Scanner;
 
 public class Main {
-    /**
-     * Function: ${fnName}
-     * Return Type: ${retType}
-     */
-    public static ${retType} ${fnName}(${paramStr}) {
-        // Write your solution here
-        return ${defaultRet};
+    public static ${retType} ${fnName}(${javaParams}) {
+        // Write your code here${fnReturnStmt}
     }
 
     public static void main(String[] args) {
@@ -225,24 +213,24 @@ ${driverBody}
 
     case "python": {
       const pyParams = normalizeParamsForLanguage(rawParams, "python");
-      const pyRetType = retType === "int" ? "int" : retType === "string" || retType === "String" ? "str" : retType === "boolean" || retType === "bool" ? "bool" : retType === "float" || retType === "double" ? "float" : "any";
+      const fnReturnStmt = isVoid ? "\n    pass" : `\n    return ${defaultRet}`;
 
       let driverBody = "";
       if (paramNames.length <= 1) {
-        driverBody = `    raw_input_data = sys.stdin.read().split()\n    if raw_input_data:\n        ${paramNames[0] || "n"} = int(raw_input_data[0])\n        result = ${fnName}(${paramNames[0] || "n"})\n        print(result)`;
+        const p0 = paramNames[0] || "n";
+        const callStmt = isVoid
+          ? `    ${fnName}(${p0})`
+          : `    print(${fnName}(${p0}))`;
+        driverBody = `    ${p0} = int(input())\n${callStmt}`;
       } else {
-        driverBody = `    raw_input_data = sys.stdin.read().split()\n    if len(raw_input_data) >= ${paramNames.length}:\n        ${paramNames.map((p, idx) => `${p} = int(raw_input_data[${idx}])`).join("\n        ")}\n        result = ${fnName}(${callArgs})\n        print(result)`;
+        const callStmt = isVoid
+          ? `    ${fnName}(${callArgs})`
+          : `    print(${fnName}(${callArgs}))`;
+        driverBody = `    ${paramNames.join(", ")} = map(int, input().split())\n${callStmt}`;
       }
 
-      return `import sys
-
-def ${fnName}(${pyParams}) -> ${pyRetType}:
-    """
-    Function: ${fnName}
-    Return Type: ${pyRetType}
-    """
-    # Write your solution here
-    return ${defaultRet}
+      return `def ${fnName}(${pyParams}):
+    # Write your code here${fnReturnStmt}
 
 if __name__ == "__main__":
 ${driverBody}`;
@@ -250,30 +238,29 @@ ${driverBody}`;
 
     case "javascript": {
       const jsParams = normalizeParamsForLanguage(rawParams, "javascript");
+      const fnReturnStmt = isVoid ? "" : `\n    return ${defaultRet};`;
 
       let driverBody = "";
       if (paramNames.length <= 1) {
-        driverBody = `    const input = fs.readFileSync(0, 'utf-8').trim();\n    if (input) {\n        const ${paramNames[0] || "n"} = parseInt(input, 10);\n        console.log(${fnName}(${paramNames[0] || "n"}));\n    }`;
+        const p0 = paramNames[0] || "n";
+        const callStmt = isVoid
+          ? `    ${fnName}(${p0});`
+          : `    console.log(${fnName}(${p0}));`;
+        driverBody = `const input = fs.readFileSync(0, "utf-8").trim();\nif (input) {\n    const ${p0} = parseInt(input, 10);\n${callStmt}\n}`;
       } else {
-        driverBody = `    const tokens = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).filter(Boolean);\n    if (tokens.length >= ${paramNames.length}) {\n        ${paramNames.map((p, idx) => `const ${p} = parseInt(tokens[${idx}], 10);`).join("\n        ")}\n        console.log(${fnName}(${callArgs}));\n    }`;
+        const callStmt = isVoid
+          ? `    ${fnName}(${callArgs});`
+          : `    console.log(${fnName}(${callArgs}));`;
+        driverBody = `const input = fs.readFileSync(0, "utf-8").trim();\nif (input) {\n    const [${paramNames.join(", ")}] = input.split(/\\s+/).map(Number);\n${callStmt}\n}`;
       }
 
-      return `const fs = require('fs');
+      return `const fs = require("fs");
 
-/**
- * Function: ${fnName}
- * Return Type: ${retType}
- */
 function ${fnName}(${jsParams}) {
-    // Write your solution here
-    return ${defaultRet};
+    // Write your code here${fnReturnStmt}
 }
 
-function main() {
-${driverBody}
-}
-
-main();`;
+${driverBody}`;
     }
 
     default:
