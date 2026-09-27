@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Code2, LogOut, Shield, BookOpen, Layers, Plus, Sparkles } from "lucide-react";
+import { Code2, LogOut, Shield, BookOpen, Layers } from "lucide-react";
 
 export default function Navbar({ user, onLogout }) {
   const location = useLocation();
@@ -57,68 +57,49 @@ export default function Navbar({ user, onLogout }) {
         </div>
 
         {/* Role Navigation */}
-        <nav className="hidden md:flex items-center gap-1 bg-[#111827]/70 p-1 rounded-2xl border border-white/5 shadow-inner">
-          {user?.role === "student" && (
-            <>
-              <Link
-                to="/student/dashboard"
-                className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
-                  isActive("/student/dashboard")
-                    ? "bg-violet-600/20 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.2)]"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <BookOpen className="w-4 h-4 text-cyan-400" /> Lab Assignments
-              </Link>
-              <Link
-                to="/student/submissions"
-                className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
-                  isActive("/student/submissions")
-                    ? "bg-violet-600/20 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.2)]"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <Layers className="w-4 h-4 text-cyan-400" /> My Submissions
-              </Link>
-            </>
-          )}
+        {(user?.role === "student" || user?.role === "admin") && (
+          <nav className="hidden md:flex items-center gap-1 bg-[#111827]/70 p-1 rounded-2xl border border-white/5 shadow-inner">
+            {user?.role === "student" && (
+              <>
+                <Link
+                  to="/student/dashboard"
+                  className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
+                    isActive("/student/dashboard")
+                      ? "bg-violet-600/20 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.2)]"
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4 text-cyan-400" /> Lab Assignments
+                </Link>
+                <Link
+                  to="/student/submissions"
+                  className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
+                    isActive("/student/submissions")
+                      ? "bg-violet-600/20 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.2)]"
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <Layers className="w-4 h-4 text-cyan-400" /> My Submissions
+                </Link>
+              </>
+            )}
 
-          {user?.role === "faculty" && (
-            <>
-              <Link
-                to="/faculty/dashboard"
-                className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
-                  isActive("/faculty/dashboard")
-                    ? "bg-violet-600/20 text-violet-300 border border-violet-500/30 shadow-[0_0_12px_rgba(139,92,246,0.2)]"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <BookOpen className="w-4 h-4 text-violet-400" /> Course Assignments
-              </Link>
-              <Link
-                to="/faculty/create-assignment"
-                className="text-xs font-bold px-3.5 py-2 rounded-xl neu-btn-primary flex items-center gap-1.5 ml-1"
-              >
-                <Plus className="w-4 h-4" /> Create Assignment
-              </Link>
-            </>
-          )}
-
-          {user?.role === "admin" && (
-            <>
-              <Link
-                to="/admin/dashboard"
-                className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
-                  isActive("/admin/dashboard")
-                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <Shield className="w-4 h-4 text-amber-400" /> Admin Console
-              </Link>
-            </>
-          )}
-        </nav>
+            {user?.role === "admin" && (
+              <>
+                <Link
+                  to="/admin/dashboard"
+                  className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
+                    isActive("/admin/dashboard")
+                      ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <Shield className="w-4 h-4 text-amber-400" /> Admin Console
+                </Link>
+              </>
+            )}
+          </nav>
+        )}
 
         {/* User profile & logout */}
         <div className="flex items-center gap-3">
