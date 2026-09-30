@@ -105,6 +105,14 @@ export const api = {
     });
   },
 
+  updateAssignment: async (id, assignmentData) => {
+    return request(`${API_BASE_URL}/assignments/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(assignmentData),
+    });
+  },
+
   deleteAssignment: async (id) => {
     return request(`${API_BASE_URL}/assignments/${id}`, {
       method: "DELETE",

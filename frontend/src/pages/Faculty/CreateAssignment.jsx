@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { api } from "../../services/api";
 import { generateStarterCode } from "../../utils/codeTemplateGenerator";
 import {
@@ -17,11 +17,29 @@ import {
   Code2,
   RotateCcw,
   Cpu,
+  Edit,
 } from "lucide-react";
+
+const toDatetimeLocal = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  const pad = (n) => String(n).padStart(2, "0");
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
 export default function CreateAssignment({ user }) {
   const navigate = useNavigate();
+  const { assignmentId } = useParams();
+  const isEditMode = Boolean(assignmentId);
+
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [errorMsg, setErrorMsg] = useState("");
   const [availableLabs, setAvailableLabs] = useState([]);
   const [selectedLabId, setSelectedLabId] = useState("");
@@ -41,7 +59,7 @@ export default function CreateAssignment({ user }) {
     maxPoints: 100,
   });
 
-  const [isCustomStarterEdited, setIsCustomStarterEdited] = useState(false);
+  const [isCustomStarterEdited, setIsCustomStarterEdited] = useState(isEditMode);
 
   // Testcases with pure freeform multiline input & output support
   const [testCases, setTestCases] = useState([
@@ -57,9 +75,9 @@ export default function CreateAssignment({ user }) {
     },
   ]);
 
-  // Generate initial starter code template on mount or language/function changes
+  // Generate initial starter code template on mount or language/function changes (only for new creation)
   useEffect(() => {
-    if (!isCustomStarterEdited) {
+    if (!isEditMode && !isCustomStarterEdited) {
       const generated = generateStarterCode({
         language: formData.requiredLanguage,
         functionName: formData.functionName,
@@ -68,31 +86,76 @@ export default function CreateAssignment({ user }) {
       });
       setFormData((prev) => ({ ...prev, starterCode: generated }));
     }
-  }, [formData.requiredLanguage, formData.functionName, formData.returnType, formData.parameters, isCustomStarterEdited]);
+  }, [formData.requiredLanguage, formData.functionName, formData.returnType, formData.parameters, isCustomStarterEdited, isEditMode]);
 
   useEffect(() => {
     fetchFacultyLabs();
-  }, []);
+    if (isEditMode) {
+      fetchAssignmentDetails();
+    }
+  }, [assignmentId]);
+
+  const fetchAssignmentDetails = async () => {
+    setInitialLoading(true);
+    try {
+      const res = await api.getAssignmentById(assignmentId);
+      if (res.success && res.assignment) {
+        const a = res.assignment;
+        setFormData({
+          title: a.title || "",
+          courseCode: a.courseCode || "",
+          courseName: a.courseName || "",
+          requiredLanguage: a.requiredLanguage || "c",
+          description: a.description || "",
+          instructions: a.instructions || "",
+          functionName: a.functionName || "solution",
+          returnType: a.returnType || "int",
+          parameters: a.parameters || "int n",
+          starterCode: a.starterCode || "",
+          deadline: toDatetimeLocal(a.deadline),
+          maxPoints: a.maxPoints !== undefined ? a.maxPoints : 100,
+        });
+
+        if (a.testCases && a.testCases.length > 0) {
+          setTestCases(a.testCases);
+        }
+
+        if (a.labSubject) {
+          setSelectedLabId(typeof a.labSubject === "object" ? a.labSubject._id : a.labSubject);
+        }
+
+        setIsCustomStarterEdited(true);
+      } else {
+        setErrorMsg(res.message || "Failed to load assignment details.");
+      }
+    } catch (err) {
+      setErrorMsg("Failed to load assignment details.");
+    } finally {
+      setInitialLoading(false);
+    }
+  };
 
   const fetchFacultyLabs = async () => {
     try {
       if (user?.teachingLabs && user.teachingLabs.length > 0) {
         setAvailableLabs(user.teachingLabs);
-        const first = user.teachingLabs[0];
-        if (first) {
-          setSelectedLabId(first._id || "");
-          setFormData((prev) => ({
-            ...prev,
-            courseCode: first.code || "",
-            courseName: first.name || "",
-            requiredLanguage: first.requiredLanguage || "c",
-          }));
+        if (!isEditMode) {
+          const first = user.teachingLabs[0];
+          if (first) {
+            setSelectedLabId(first._id || "");
+            setFormData((prev) => ({
+              ...prev,
+              courseCode: first.code || "",
+              courseName: first.name || "",
+              requiredLanguage: first.requiredLanguage || "c",
+            }));
+          }
         }
       } else {
         const res = await api.getLabSubjects();
         if (res.success && res.labSubjects) {
           setAvailableLabs(res.labSubjects);
-          if (res.labSubjects.length > 0) {
+          if (!isEditMode && res.labSubjects.length > 0) {
             const first = res.labSubjects[0];
             setSelectedLabId(first._id);
             setFormData((prev) => ({
@@ -188,11 +251,14 @@ export default function CreateAssignment({ user }) {
         testCases: cleanedTestCases,
       };
 
-      const res = await api.createAssignment(payload);
+      const res = isEditMode
+        ? await api.updateAssignment(assignmentId, payload)
+        : await api.createAssignment(payload);
+
       if (res.success) {
         navigate("/faculty/dashboard");
       } else {
-        setErrorMsg(res.message || "Failed to create assignment");
+        setErrorMsg(res.message || `Failed to ${isEditMode ? "update" : "create"} assignment`);
       }
     } catch (err) {
       setErrorMsg(err.message || "Server communication error");
@@ -215,6 +281,17 @@ export default function CreateAssignment({ user }) {
     });
   };
 
+  if (initialLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="relative">
+          <div className="w-12 h-12 rounded-full border-2 border-violet-500/20 border-t-violet-400 animate-spin"></div>
+          <div className="w-8 h-8 rounded-full border-2 border-cyan-500/20 border-t-cyan-400 animate-spin absolute top-2 left-2"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <div className="flex items-center justify-between">
@@ -225,9 +302,14 @@ export default function CreateAssignment({ user }) {
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Faculty Console
           </Link>
-          <h1 className="text-2xl font-bold text-white">Create Course Lab Assignment</h1>
+          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+            {isEditMode ? <Edit className="w-6 h-6 text-violet-400" /> : null}
+            {isEditMode ? "Edit Course Lab Assignment" : "Create Course Lab Assignment"}
+          </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Specify course parameters, lock the programming language, set deadline, and add test cases.
+            {isEditMode
+              ? "Modify assignment details, update submission deadline, tweak test cases, and save changes."
+              : "Specify course parameters, lock the programming language, set deadline, and add test cases."}
           </p>
         </div>
       </div>
@@ -595,7 +677,7 @@ export default function CreateAssignment({ user }) {
             disabled={loading}
             className="px-6 py-3 rounded-xl neu-btn-primary text-white text-xs font-bold shadow-lg disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer"
           >
-            <Save className="w-4 h-4" /> Publish Lab Assignment
+            <Save className="w-4 h-4" /> {isEditMode ? "Save Changes" : "Publish Lab Assignment"}
           </button>
         </div>
       </form>

@@ -278,3 +278,8 @@ select:-webkit-autofill {
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* Hide application header when quick edit section/modal is open */
+body.modal-open-hide-header header {
+  display: none !important;
+}

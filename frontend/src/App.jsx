@@ -171,6 +171,14 @@ export default function App() {
               }
             />
             <Route
+              path="/faculty/edit-assignment/:assignmentId"
+              element={
+                <ProtectedRoute user={user} allowedRoles={["faculty", "admin"]}>
+                  <CreateAssignment user={user} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/faculty/submissions/:assignmentId"
               element={
                 <ProtectedRoute user={user} allowedRoles={["faculty", "admin"]}>

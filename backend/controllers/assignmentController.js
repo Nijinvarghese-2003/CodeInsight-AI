@@ -200,7 +200,11 @@ export const updateAssignment = async (req, res) => {
     assignment = await Assignment.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
-    });
+    })
+      .populate("department", "name code")
+      .populate("course", "name code")
+      .populate("labSubject", "name code requiredLanguage")
+      .populate("createdBy", "name email department");
 
     res.status(200).json({
       success: true,
