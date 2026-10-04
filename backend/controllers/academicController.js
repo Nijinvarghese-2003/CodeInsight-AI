@@ -152,7 +152,7 @@ export const createLabSubject = async (req, res) => {
     if (!name || !code || !courseId || !requiredLanguage) {
       return res.status(400).json({
         success: false,
-        message: "Lab name, code, courseId, and locked programming language are required",
+        message: "Lab name, code, courseId, and required programming language are required",
       });
     }
 

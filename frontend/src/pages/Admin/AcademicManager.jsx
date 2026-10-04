@@ -408,7 +408,7 @@ export default function AcademicManager() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-violet-400" /> Locked Programming Language *
+                <Lock className="w-3.5 h-3.5 text-violet-400" /> Required Programming Language *
               </label>
               <select
                 value={labForm.requiredLanguage}
@@ -493,7 +493,7 @@ export default function AcademicManager() {
                                   <span className="font-mono text-[10px] text-slate-400">({lab.code})</span>
                                 </span>
                                 <span className="px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 font-mono text-[10px] font-bold uppercase border border-violet-500/30">
-                                  Locked: {lab.requiredLanguage}
+                                  Required: {lab.requiredLanguage}
                                 </span>
                               </div>
                             ))

@@ -282,7 +282,7 @@ export default function FacultyDashboard({ user }) {
                         {assignment.courseCode || "LAB"}
                       </span>
                       <span className="px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-violet-500/15 text-violet-300 border border-violet-500/30 uppercase">
-                        LOCKED: {assignment.requiredLanguage}
+                        REQUIRED: {assignment.requiredLanguage}
                       </span>
                     </div>
 
@@ -440,7 +440,7 @@ export default function FacultyDashboard({ user }) {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5 text-violet-400" /> Locked Language
+                    <Lock className="w-3.5 h-3.5 text-violet-400" /> Required Programming Language
                   </label>
                   <select
                     name="requiredLanguage"

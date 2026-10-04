@@ -27,11 +27,11 @@ export const submitSolution = async (req, res) => {
       });
     }
 
-    // STRICT LANGUAGE LOCK VERIFICATION
+    // REQUIRED LANGUAGE VERIFICATION
     if (submittedLanguage.toLowerCase() !== assignment.requiredLanguage.toLowerCase()) {
       return res.status(400).json({
         success: false,
-        message: `Language restriction error: This assignment is locked to '${assignment.requiredLanguage.toUpperCase()}' for course ${assignment.courseCode} (${assignment.courseName}). You cannot submit using '${submittedLanguage.toUpperCase()}'.`,
+        message: `Language restriction error: This assignment requires '${assignment.requiredLanguage.toUpperCase()}' for course ${assignment.courseCode} (${assignment.courseName}). You cannot submit using '${submittedLanguage.toUpperCase()}'.`,
       });
     }
 

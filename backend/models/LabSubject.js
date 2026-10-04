@@ -23,7 +23,7 @@ const labSubjectSchema = new mongoose.Schema(
       ref: "Course",
       required: [true, "Course reference is required"],
     },
-    // Strictly locked programming language for this lab subject
+    // Required programming language for this lab subject
     requiredLanguage: {
       type: String,
       enum: ["c", "cpp", "java", "python", "javascript"],

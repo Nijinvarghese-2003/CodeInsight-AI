@@ -169,10 +169,10 @@ export default function CodeWorkspace({ user }) {
           <p className="text-xs text-slate-400 mt-1">{assignment.courseName} &bull; Faculty: {assignment.createdBy?.name || "Course Instructor"}</p>
         </div>
 
-        {/* LOCKED LANGUAGE BADGE */}
+        {/* REQUIRED LANGUAGE BADGE */}
         <div className="flex items-center gap-2 bg-violet-500/15 border border-violet-500/30 px-4 py-2.5 rounded-2xl text-violet-300 text-xs font-bold shadow-sm">
           <Lock className="w-4 h-4 text-violet-400" />
-          <span>Locked Language: <strong className="font-mono text-white tracking-wider">{reqLangUpper}</strong></span>
+          <span>Required Language: <strong className="font-mono text-white tracking-wider">{reqLangUpper}</strong></span>
         </div>
       </div>
 
@@ -215,7 +215,7 @@ export default function CodeWorkspace({ user }) {
                   solution.{assignment.requiredLanguage}
                 </span>
                 <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-mono font-bold border border-cyan-500/20">
-                  {reqLangUpper} LOCKED
+                  {reqLangUpper} REQUIRED
                 </span>
                 <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 font-mono font-bold border border-violet-500/30">
                   fn: {assignment.functionName || "solution"}()

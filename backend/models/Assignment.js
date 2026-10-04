@@ -51,7 +51,7 @@ const assignmentSchema = new mongoose.Schema(
       required: [true, "Course name is required"], // e.g., C Programming Lab, Java OOP Lab
       trim: true,
     },
-    // Strictly locked language for this assignment/course
+    // Required programming language for this assignment/course
     requiredLanguage: {
       type: String,
       enum: ["c", "cpp", "java", "python", "javascript"],

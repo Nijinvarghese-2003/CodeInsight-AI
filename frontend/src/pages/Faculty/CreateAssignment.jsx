@@ -371,7 +371,7 @@ export default function CreateAssignment({ user }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-violet-400" /> Strictly Locked Programming Language *
+                <Lock className="w-3.5 h-3.5 text-violet-400" /> Required Programming Language *
               </label>
               <select
                 name="requiredLanguage"
